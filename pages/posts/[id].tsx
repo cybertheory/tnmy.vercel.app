@@ -108,6 +108,9 @@ const Post = ({
     };
     update();
   }, []);
+
+
+  
   return (
     <>
       <Head>
@@ -173,6 +176,8 @@ export async function getStaticPaths() {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const pageId: any = params!.id;
   const notion = new Client({ auth: process.env.NOTION_KEY });
+  
+
 
   const response = await notion.blocks.children.list({
     block_id: pageId,
@@ -180,6 +185,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   });
   const pageResponse: any = await notion.pages.retrieve({ page_id: pageId });
   let postProperties = pageResponse.properties;
+  // console.log(postProperties['Views'].number);
+  await notion.pages.update({
+    page_id: pageId,
+    properties: {
+      'Views': {
+        "number": parseInt(postProperties['Views'].number) + 1,
+      }
+    },});
 
   const results = response.results;
   const postData = results.map((x: any) => {
@@ -199,6 +212,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       checked: x[type].checked ? true : false,
     };
   });
+
+
   return {
     props: {
       postProperties: postProperties,

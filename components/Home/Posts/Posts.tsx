@@ -26,7 +26,7 @@ const PostCard = ({ post }: { post: { [key: string]: any } }) => {
           backgroundColor: post.properties.BgColor?.rich_text[0]?.plain_text,
           color: post.properties.Color?.rich_text[0]?.plain_text,
         }}
-        className={`${styles.post} relative cursor-pointer rounded-md flex items-center justify-center p-6 bg-pink-300 text-lg leading-5`}
+        className={`${styles.post} relative cursor-pointer rounded-md flex items-center justify-center p-6 bg-purple-900 text-lg leading-5`}
       >
         {post.properties.Name.title[0].plain_text}
         <span

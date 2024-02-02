@@ -32,7 +32,7 @@ const VerticalNav = ({
           projects
         </StyledLink>
         <a
-          href="/tanmay-kachroo-resume.pdf"
+          href="/Resume_2023_Fall.pdf"
           target="_blank"
           rel="noreferrer"
           className="text-2xl w-fit"

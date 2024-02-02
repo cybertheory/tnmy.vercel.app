@@ -1,13 +1,13 @@
 const experienceData = [
   {
-    position: "web dev intern",
-    company: "Spacenos",
-    duration: "dec, 2021 - present",
+    position: "Founder",
+    company: "Pagefelt",
+    duration: "dec, 2023 - present",
   },
   {
-    position: "web dev intern",
-    company: "Protege",
-    duration: "sep, 2021 - nov, 2021",
+    position: "Lead Cloud Integrations Engineer",
+    company: "Alight",
+    duration: "Dec, 2022 - Present",
   },
 ];
 export default experienceData;

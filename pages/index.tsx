@@ -22,7 +22,7 @@ const Home = ({
         <title>Home</title>
       </Head>
       <Profile />
-      <div className="mt-12 text-xl mb-20">{userData.quote}</div>
+      <div className="mt-12 text-xl mb-20 w-96">{userData.quote}</div>
       <span className="text-sm mb-3">experience</span>
       <Experience />
       <span className="text-sm mt-16 mb-3">posts</span>
@@ -62,6 +62,7 @@ export async function getStaticProps() {
       ],
     },
   });
+
   const projectsResponse = await notion.databases.query({
     database_id: process.env.NOTION_PROJECTS_DATABASE_ID!,
     filter: {

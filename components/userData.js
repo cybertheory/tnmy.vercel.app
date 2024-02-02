@@ -1,14 +1,14 @@
 const userData = {
-  name: "tanmay",
-  bio: "fullstack dev",
+  name: "rishabh",
+  bio: "the social developer",
   quote: (
     <>
-      I like <span className="text-red-200">building.</span>
-    </>
-  ),
-  github: "https://github.com/tnmyk",
-  linkedIn: "https://www.linkedin.com/in/tanmayk5/",
-  discord: "https://discordapp.com/users/757670601442721793 ",
-  twitter: "https://twitter.com/0xtanmay",
+      A blog about making organizations, engineering, and design approachable, transparent, and <span className="text-purple-500">human-first.</span>
+    </> ),
+  github: "https://github.com/cybertheory",
+  linkedIn: "https://www.linkedin.com/in/cybertheory/",
+  discord: "",
+  twitter: "",
+  email: "mailto:rishabhsingh@berkeley.edu?subject=humanSystems",
 };
 export default userData;
