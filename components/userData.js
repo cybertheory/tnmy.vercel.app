@@ -17,6 +17,7 @@ const userData = {
     <>
       An attempt to define the{" "}
       <span className="text-neutral-200">latent structure</span> of the universe and human
+      existence — a systemic approach to solving philosophy, cosmology, cognition, and human
       existence — making systemic thinking approachable, transparent, and human-first,
       so we can build better human systems.
     </>

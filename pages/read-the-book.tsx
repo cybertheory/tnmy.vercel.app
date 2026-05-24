@@ -1,5 +1,5 @@
-import Head from "next/head";
 import Link from "next/link";
+import SocialHead from "../components/SEO/SocialHead";
 import { BsDownload, BsArrowRight } from "react-icons/bs";
 
 const CONTENTS: [string, string][] = [
@@ -22,9 +22,11 @@ const CONTENTS: [string, string][] = [
 export default function ReadTheBook() {
   return (
     <>
-      <Head>
-        <title>Read The Book — Human Systems</title>
-      </Head>
+      <SocialHead
+        title="Read The Book"
+        description="Philosophiae Naturalis Principia Systematica — systemic principles of natural philosophy. View the full manuscript or read each essay online."
+        path="/read-the-book"
+      />
       <div className="mt-4 sm:mt-8">
         <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-100 mb-6 inline-block">
           ← back

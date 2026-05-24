@@ -1,6 +1,6 @@
-import Head from "next/head";
 import Link from "next/link";
 import EssayContent from "../../components/Essays/EssayContent";
+import SocialHead from "../../components/SEO/SocialHead";
 import { getAllEssaySlugs, getEssayBySlug } from "../../lib/essays.server";
 import { Essay } from "../../lib/essays";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -13,11 +13,18 @@ type Props = {
 };
 
 const EssayPage = ({ essay, prev, next }: Props) => {
+  const description =
+    essay.logline ||
+    `${essay.title} — a working essay from Human Systems on ${essay.tag.toLowerCase()}.`;
+
   return (
     <>
-      <Head>
-        <title>{essay.title} — Human Systems</title>
-      </Head>
+      <SocialHead
+        title={essay.title}
+        description={description}
+        path={`/essays/${essay.slug}`}
+        type="article"
+      />
       <div className="mt-4 sm:mt-8">
         <Link
           href="/"

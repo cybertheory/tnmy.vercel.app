@@ -3,17 +3,21 @@ import Link from "next/link";
 import Essays from "../components/Essays/Essays";
 import HypothesisCard from "../components/Home/HypothesisCard/HypothesisCard";
 import Profile from "../components/Home/Profile/Profile";
+import SocialHead from "../components/SEO/SocialHead";
 import userData from "../components/userData";
 import { EssayMeta } from "../lib/essays";
 import { getEssayMeta } from "../lib/essays.server";
+import { SITE_DESCRIPTION } from "../lib/site";
 import { BsDownload, BsArrowRight } from "react-icons/bs";
 
 export default function Home({ essays }: { essays: EssayMeta[] }) {
   return (
     <>
-      <Head>
-        <title>Human Systems — Rishabh Singh</title>
-      </Head>
+      <SocialHead
+        title="Human Systems"
+        description={SITE_DESCRIPTION}
+        path="/"
+      />
       <Profile />
       <div className="mt-8 sm:mt-10 text-base sm:text-xl mb-6 sm:mb-8 leading-relaxed">{userData.quote}</div>
       <HypothesisCard />
