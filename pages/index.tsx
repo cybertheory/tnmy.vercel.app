@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Essays from "../components/Essays/Essays";
+import HypothesisCard from "../components/Home/HypothesisCard/HypothesisCard";
 import Profile from "../components/Home/Profile/Profile";
 import userData from "../components/userData";
 import { EssayMeta } from "../lib/essays";
@@ -14,9 +15,10 @@ export default function Home({ essays }: { essays: EssayMeta[] }) {
         <title>Human Systems — Rishabh Singh</title>
       </Head>
       <Profile />
-      <div className="mt-8 sm:mt-10 text-base sm:text-xl mb-12 sm:mb-16 leading-relaxed">{userData.quote}</div>
+      <div className="mt-8 sm:mt-10 text-base sm:text-xl mb-6 sm:mb-8 leading-relaxed">{userData.quote}</div>
+      <HypothesisCard />
 
-      <span id="essays" className="text-sm mb-3 text-neutral-400">essays</span>
+      <span id="essays" className="text-sm mb-3 text-neutral-400 mt-12 sm:mt-16">essays</span>
       <p className="text-neutral-400 text-sm mb-6 max-w-md">
         A prelude, twelve essays, and an epilogue — a working draft of systemic principles
         from understanding to existence.
