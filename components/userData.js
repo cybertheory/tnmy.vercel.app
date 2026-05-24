@@ -22,7 +22,7 @@ const userData = {
       so we can build better human systems.
     </>
   ),
-  github: "https://github.com/cybertheory/humansystems",
+  github: "https://github.com/cybertheory/tnmy.vercel.app",
   linkedIn: "https://www.linkedin.com/in/cybertheory/",
   email: "mailto:rishabhsingh@berkeley.edu?subject=humanSystems",
 };
