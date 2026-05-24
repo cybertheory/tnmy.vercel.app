@@ -5,6 +5,8 @@ title: "Essay IX — On Reasoning"
 tag: "Inference"
 dot: "#378ADD"
 laws: ["R1", "R2", "R3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "Reasoning is not what intelligent systems inherently do. It is what conscious intelligent systems develop under adversarial pressure. Intelligence is necessary but not sufficient. Consciousness is necessary but not sufficient. The adversarial environment is the third required condition. Remove any one and you get something that looks like reasoning but is not."
 ---
 # Essay IX — On Reasoning

@@ -5,6 +5,8 @@ title: "Prelude — The Journey Is More Valuable Than the Goal"
 tag: "Prologue"
 dot: "#7F77DD"
 laws: ["U2", "SY3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "AI is a mirror held up to the human mind. The race toward general intelligence will prove more transformative than arrival — because to posit general intelligence you must first posit an underlying latent structure to the universe for it to learn. That structure is what this series attempts to read."
 ---
 # Prelude — The Journey Is More Valuable Than the Goal

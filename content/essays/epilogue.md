@@ -5,6 +5,8 @@ title: "Epilogue — Value to Be Taken"
 tag: "Epilogue"
 dot: "#5E8CC2"
 laws: []
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "A theory of the universe is only worth building if it changes how you act inside it. This epilogue turns the framework back toward the reader. Not as a conclusion — the framework is not complete and may never be — but as a set of provocations. What does it mean to live inside a system you can partially understand but never fully escape?"
 ---
 # Epilogue — Value to Be Taken

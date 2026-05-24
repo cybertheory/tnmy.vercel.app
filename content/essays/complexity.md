@@ -5,6 +5,8 @@ title: "Essay IV — On Complexity"
 tag: "Complexity"
 dot: "#D4537E"
 laws: ["CX1", "CX2", "CX3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "When systems scale past critical thresholds, they undergo phase transitions. The rules that governed them before the transition do not hold after it. Quantitative change produces qualitative discontinuity. More is genuinely different — not just more."
 ---
 # Essay IV — On Complexity

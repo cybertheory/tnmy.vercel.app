@@ -13,6 +13,8 @@ export const SITE_URL =
 
 export const DEFAULT_OG_IMAGE = "/images/og.png";
 
+export const GITHUB_REPO = "cybertheory/tnmy.vercel.app";
+
 export function absoluteUrl(path: string) {
   return `${SITE_URL.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
 }

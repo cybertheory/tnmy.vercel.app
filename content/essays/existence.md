@@ -5,6 +5,8 @@ title: "Essay XII — On Existence"
 tag: "Cosmology"
 dot: "#888780"
 laws: ["EX1", "EX2", "EX3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "The lifecycle of the universe follows the same arc as every system within it. It is not a container for systems — it is the largest instance of the same laws. Collapse is not termination. It is re-encoding. And the learnability of our universe may be its most significant inherited property — a message from a prior civilisation encoded into the boundary conditions of reality itself."
 ---
 # Essay XII — On Existence

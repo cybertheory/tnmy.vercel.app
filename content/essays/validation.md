@@ -5,6 +5,8 @@ title: "Essay V — On Validation"
 tag: "Epistemics"
 dot: "#639922"
 laws: ["V1", "V2", "V3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "A system without adversarial validation converges on internal consistency, not truth. Coherence is not correctness. Iterative adversarial challenge is the only mechanism by which any system — biological, social, or artificial — becomes more correct over time. This is not a theory of science. It is a law of systems."
 ---
 # Essay V — On Validation

@@ -1,11 +1,13 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import matter from "gray-matter";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const source = path.join(root, "Philosophiae_Naturalis_Principia_Systematica.md");
 const outDir = path.join(root, "content", "essays");
+const catalogPath = path.join(root, "content", "releases.json");
 
 const ESSAYS = [
   { slug: "prelude", num: "00", header: "# Prelude — The Journey Is More Valuable Than the Goal", tag: "Prologue", dot: "#7F77DD", laws: ["U2", "SY3"] },
@@ -24,6 +26,25 @@ const ESSAYS = [
   { slug: "epilogue", num: "EP", header: "# Epilogue — Value to Be Taken", tag: "Epilogue", dot: "#5E8CC2", laws: [] },
 ];
 
+function loadCatalogDefaults() {
+  const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
+  const latest = catalog.releases[catalog.releases.length - 1];
+  return {
+    version: catalog.currentVersion,
+    updated: latest?.publishedAt ?? new Date().toISOString().slice(0, 10),
+  };
+}
+
+function readExistingVersionMeta(slug) {
+  const file = path.join(outDir, `${slug}.md`);
+  if (!fs.existsSync(file)) return {};
+  const { data } = matter(fs.readFileSync(file, "utf8"));
+  return {
+    version: data.version,
+    updated: data.updated,
+  };
+}
+
 function extractTitle(header) {
   return header.replace(/^#\s+/, "").trim();
 }
@@ -33,7 +54,7 @@ function extractLogline(body) {
   return match ? match[1].trim() : "";
 }
 
-function frontmatter(essay, body) {
+function frontmatter(essay, body, versionMeta) {
   const title = extractTitle(essay.header);
   const logline = extractLogline(body);
   const lines = [
@@ -44,6 +65,8 @@ function frontmatter(essay, body) {
     `tag: "${essay.tag}"`,
     `dot: "${essay.dot}"`,
     `laws: [${essay.laws.map((l) => `"${l}"`).join(", ")}]`,
+    `version: "${versionMeta.version}"`,
+    `updated: "${versionMeta.updated}"`,
   ];
   if (logline) {
     lines.push(`logline: "${logline.replace(/"/g, '\\"')}"`);
@@ -53,6 +76,7 @@ function frontmatter(essay, body) {
 }
 
 function main() {
+  const defaults = loadCatalogDefaults();
   const text = fs.readFileSync(source, "utf8");
   fs.mkdirSync(outDir, { recursive: true });
 
@@ -67,13 +91,17 @@ function main() {
     const nextHeader = ESSAYS[i + 1]?.header;
     const end = nextHeader ? text.indexOf(nextHeader) : text.length;
     let body = text.slice(start, end).trim();
-
-    // Remove trailing horizontal rule before next essay
     body = body.replace(/\n---\s*$/, "").trim();
 
-    const output = frontmatter(essay, body) + body + "\n";
+    const existing = readExistingVersionMeta(essay.slug);
+    const versionMeta = {
+      version: existing.version ?? defaults.version,
+      updated: existing.updated ?? defaults.updated,
+    };
+
+    const output = frontmatter(essay, body, versionMeta) + body + "\n";
     fs.writeFileSync(path.join(outDir, `${essay.slug}.md`), output);
-    console.log(`${essay.slug}: ${output.length} chars`);
+    console.log(`${essay.slug}: v${versionMeta.version} · ${versionMeta.updated}`);
   }
 }
 

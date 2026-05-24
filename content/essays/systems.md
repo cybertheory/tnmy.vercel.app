@@ -5,6 +5,8 @@ title: "Essay II — On Systems"
 tag: "Systems Theory"
 dot: "#1D9E75"
 laws: ["SY1", "SY2", "SY3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "The brain's deepest drive is to rebuild and transcend itself. Societies, civilisations, markets, computers, and AI are each successive externalisations of that drive. All systems share one irreducible skeleton: input, state, transformation, output, feedback. Everything else is specialisation."
 ---
 # Essay II — On Systems

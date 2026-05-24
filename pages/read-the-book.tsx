@@ -1,6 +1,11 @@
 import Link from "next/link";
 import SocialHead from "../components/SEO/SocialHead";
+import { getCurrentVersion } from "../lib/versions.server";
 import { BsDownload, BsArrowRight } from "react-icons/bs";
+
+type Props = {
+  currentVersion: string;
+};
 
 const CONTENTS: [string, string][] = [
   ["prelude", "Prelude — The Journey Is More Valuable Than the Goal"],
@@ -19,7 +24,7 @@ const CONTENTS: [string, string][] = [
   ["epilogue", "Epilogue — Value to Be Taken"],
 ];
 
-export default function ReadTheBook() {
+export default function ReadTheBook({ currentVersion }: Props) {
   return (
     <>
       <SocialHead
@@ -86,9 +91,16 @@ export default function ReadTheBook() {
         </div>
 
         <p className="text-xs text-neutral-600 mt-10">
-          © 2026 Rishabh Singh. Working draft — subject to revision.
+          © 2026 Rishabh Singh. Working draft v{currentVersion} —{" "}
+          <Link href="/versions" className="hover:text-neutral-400 underline-offset-2 hover:underline">
+            version history
+          </Link>
         </p>
       </div>
     </>
   );
+}
+
+export async function getStaticProps() {
+  return { props: { currentVersion: getCurrentVersion() } };
 }

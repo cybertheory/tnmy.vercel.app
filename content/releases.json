@@ -1,0 +1,19 @@
+{
+  "currentVersion": "0.1.0",
+  "githubRepo": "cybertheory/tnmy.vercel.app",
+  "releases": [
+    {
+      "version": "0.1.0",
+      "publishedAt": "2026-05-23",
+      "commit": "152ece3",
+      "tag": "v0.1.0",
+      "summary": "Initial web publication of the working draft.",
+      "changes": [
+        "Published prelude, twelve essays, and epilogue online",
+        "Read the book page with manuscript PDF",
+        "Hypothesis annotation card for public feedback",
+        "Open Graph social preview cards"
+      ]
+    }
+  ]
+}

@@ -6,6 +6,8 @@ export type EssayMeta = {
   dot: string;
   laws: string[];
   logline?: string;
+  version: string;
+  updated: string;
 };
 
 export type Essay = EssayMeta & {

@@ -5,6 +5,8 @@ title: "Essay III — On Harmony"
 tag: "Interoperability"
 dot: "#BA7517"
 laws: ["H1", "H2", "H3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "When systems meet, incompatibilities produce structural blind spots that neither system can see. These gaps are not failures of communication or goodwill. They are irreducible features of bounded systems encountering each other. Harmony is not the elimination of these gaps. It is their stable coexistence."
 ---
 # Essay III — On Harmony

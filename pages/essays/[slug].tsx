@@ -3,6 +3,7 @@ import EssayContent from "../../components/Essays/EssayContent";
 import SocialHead from "../../components/SEO/SocialHead";
 import { getAllEssaySlugs, getEssayBySlug } from "../../lib/essays.server";
 import { Essay } from "../../lib/essays";
+import { formatVersionDate } from "../../lib/versions";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 
@@ -32,11 +33,18 @@ const EssayPage = ({ essay, prev, next }: Props) => {
         >
           <BsArrowLeft /> all essays
         </Link>
-        <div className="mb-6 flex items-center gap-3 text-xs text-neutral-500">
+        <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-neutral-500">
           <span style={{ color: essay.dot }}>{essay.num} · {essay.tag}</span>
           {essay.laws.length > 0 && (
             <span>Laws: {essay.laws.join(", ")}</span>
           )}
+          <span className="text-neutral-600">·</span>
+          <span>
+            v{essay.version} · updated {formatVersionDate(essay.updated)}
+          </span>
+          <Link href="/versions" className="text-neutral-400 hover:text-neutral-100 underline-offset-2 hover:underline">
+            version history
+          </Link>
         </div>
         <EssayContent content={essay.content} />
         <div className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-neutral-800 flex flex-col sm:flex-row justify-between gap-4 text-sm">

@@ -5,6 +5,8 @@ title: "Essay VII — On Intelligence"
 tag: "Intelligence"
 dot: "#2E9E8A"
 laws: ["I1", "I2", "I3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "Intelligence is not a human privilege. It is an emergent property of sufficiently complex validated systems. It appears wherever the conditions are met — in slime moulds, markets, immune systems, and transformer models. The substrate is irrelevant. What matters is complexity, validation, and the presence of a world model."
 ---
 # Essay VII — On Intelligence

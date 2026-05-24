@@ -5,6 +5,8 @@ title: "Essay VIII — On Consciousness"
 tag: "Consciousness"
 dot: "#D85A30"
 laws: ["C1", "C2", "C3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "Consciousness is what it is like to be an intelligent system operating from inside. It is the first-person texture of processing — irreducible to third-person description, structurally incompatible across systems with different architectures, and constitutionally incapable of fully modelling itself. It is E2 applied to intelligence specifically."
 ---
 # Essay VIII — On Consciousness

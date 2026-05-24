@@ -5,6 +5,8 @@ title: "Essay I — On Understanding"
 tag: "Philosophy"
 dot: "#5E8CC2"
 laws: ["U1", "U2", "U3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "Every framework for knowledge — religion, science, philosophy — is an attempt to compress reality into shorter descriptions. All roads lead back to philosophy because philosophy is the question of what counts as a valid compressor. Understanding is not an achievement. It is a process of compression that never terminates."
 ---
 # Essay I — On Understanding

@@ -5,6 +5,8 @@ title: "Essay XI — On Singularity"
 tag: "Singularity"
 dot: "#C25A8A"
 laws: ["SI1", "SI2", "SI3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "The Singularity is not a technological accident. It is the inevitable physical expression of the universe's ordering drive taken to completion. Framed correctly, it is not a speed event but a validation collapse event — the moment when a system's manifestation outpaces its environment's capacity to push back. It is self-terminating. It ends in collapse."
 ---
 # Essay XI — On Singularity

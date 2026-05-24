@@ -5,6 +5,8 @@ title: "Essay VI — On Emergent Effects"
 tag: "Emergence"
 dot: "#7F77DD"
 laws: ["E1", "E2", "E3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "Emergent properties are real and causally powerful — but only legible from inside the system. To external observers, the system is a black box. Every emergent effect has an equal and opposite internal emergent experience. This symmetry is the most important structural law in these essays, and the hinge on which the series turns."
 ---
 # Essay VI — On Emergent Effects

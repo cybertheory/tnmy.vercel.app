@@ -5,6 +5,8 @@ title: "Essay X — On Manifestation"
 tag: "Causation"
 dot: "#1D9E75"
 laws: ["M1", "M2", "M3"]
+version: "0.1.0"
+updated: "2026-05-23"
 logline: "Conscious reasoning systems do not merely model reality — they act on it deliberately. The fidelity of that action depends on both the quality of reasoning and the degree of internal harmony. At sufficient scale, a system manifests in material reality regardless of intent. And the universe itself may be a manifesting system of this kind."
 ---
 # Essay X — On Manifestation
