@@ -1,0 +1,747 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans, sans-serif); background: transparent; }
+.wrap { padding: 1rem 0; }
+.page-title { font-size: 18px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 3px; }
+.page-sub { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 16px; }
+
+/* Top nav tabs */
+.top-nav { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.top-tab { font-size: 12px; padding: 5px 12px; border-radius: 20px; cursor: pointer; border: 1px solid var(--color-border-secondary); color: var(--color-text-secondary); background: var(--color-background-secondary); transition: all 0.15s; user-select: none; font-weight: 500; }
+.top-tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
+
+/* Panels */
+.panel { display: none; }
+.panel.visible { display: block; }
+
+/* Essay list */
+.essay-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.essay-tab { font-size: 11px; padding: 3px 9px; border-radius: 20px; cursor: pointer; border: 1px solid var(--color-border-tertiary); color: var(--color-text-tertiary); background: var(--color-background-secondary); transition: all 0.15s; user-select: none; }
+.essay-tab.active { color: #fff; border-color: transparent; }
+
+.essay-view { display: none; }
+.essay-view.visible { display: block; }
+
+.essay-hero { padding: 16px; border-radius: 10px; margin-bottom: 14px; border: 1px solid; }
+.essay-num-large { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.essay-title-large { font-size: 17px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 6px; line-height: 1.3; }
+.essay-logline { font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
+.thesis-bar { padding: 8px 12px; border-radius: 6px; border-left: 3px solid; background: var(--color-background-primary); }
+.thesis-bar-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-tertiary); margin-bottom: 3px; }
+.thesis-bar-text { font-size: 13px; font-weight: 500; color: var(--color-text-primary); line-height: 1.5; }
+
+.section-block { margin-bottom: 8px; }
+.section-header { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 8px; background: var(--color-background-secondary); cursor: pointer; user-select: none; border: 1px solid var(--color-border-tertiary); }
+.section-header:hover { border-color: var(--color-border-secondary); }
+.section-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.section-title { flex: 1; font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.section-chevron { font-size: 10px; color: var(--color-text-tertiary); transition: transform 0.2s; }
+.section-block.open .section-chevron { transform: rotate(180deg); }
+.section-block.open .section-header { border-color: var(--color-border-secondary); border-radius: 8px 8px 0 0; }
+.section-body { display: none; padding: 12px; border: 1px solid var(--color-border-secondary); border-top: none; border-radius: 0 0 8px 8px; background: var(--color-background-primary); }
+.section-block.open .section-body { display: block; }
+
+.sub-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-tertiary); margin-bottom: 5px; margin-top: 10px; }
+.sub-label:first-child { margin-top: 0; }
+.body-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.65; }
+.claim-block { padding: 7px 10px; border-radius: 5px; border-left: 2px solid; margin-bottom: 6px; background: var(--color-background-secondary); }
+.claim-text { font-size: 12px; color: var(--color-text-primary); line-height: 1.5; font-weight: 500; }
+.proof-text { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 3px; }
+.q-row { display: flex; gap: 6px; margin-bottom: 5px; align-items: flex-start; }
+.q-mark { font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.q-text { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.chip { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--color-background-tertiary); color: var(--color-text-secondary); border: 1px solid var(--color-border-tertiary); }
+.law-ref { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 2px 8px; border-radius: 10px; border: 1px solid; font-weight: 600; margin: 2px; }
+
+/* Laws panel */
+.laws-grid { display: flex; flex-direction: column; gap: 6px; }
+.law-cat-header { display: flex; align-items: center; gap: 8px; padding: 10px 0 6px; border-bottom: 1px solid var(--color-border-tertiary); margin-bottom: 6px; }
+.law-cat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.law-cat-title { font-size: 14px; font-weight: 600; color: var(--color-text-primary); }
+.law-cat-count { font-size: 11px; color: var(--color-text-tertiary); }
+.law-item { border: 1px solid var(--color-border-tertiary); border-radius: 8px; overflow: hidden; cursor: pointer; }
+.law-item:hover { border-color: var(--color-border-secondary); }
+.law-item.open { border-color: var(--color-border-secondary); }
+.law-item-header { display: flex; align-items: flex-start; gap: 8px; padding: 9px 12px; background: var(--color-background-secondary); }
+.law-code { font-size: 11px; font-weight: 700; min-width: 28px; margin-top: 1px; flex-shrink: 0; }
+.law-stmt { flex: 1; font-size: 12px; font-weight: 500; color: var(--color-text-primary); line-height: 1.5; }
+.law-nov { font-size: 10px; padding: 1px 6px; border-radius: 8px; font-weight: 500; white-space: nowrap; margin-top: 1px; flex-shrink: 0; }
+.nov-novel { background: #EAF3DE; color: #3B6D11; border: 1px solid #90C45A55; }
+.nov-partial { background: #FAEEDA; color: #854F0B; border: 1px solid #BA751755; }
+.nov-est { background: var(--color-background-tertiary); color: var(--color-text-tertiary); border: 1px solid var(--color-border-tertiary); }
+.law-chev { font-size: 10px; color: var(--color-text-tertiary); transition: transform 0.2s; margin-top: 2px; }
+.law-item.open .law-chev { transform: rotate(180deg); }
+.law-body { display: none; padding: 10px 12px; border-top: 1px solid var(--color-border-tertiary); }
+.law-item.open .law-body { display: block; }
+.law-formal { padding: 6px 10px; border-radius: 5px; border-left: 2px solid; background: var(--color-background-secondary); font-size: 11px; font-style: italic; color: var(--color-text-primary); line-height: 1.6; margin-bottom: 8px; }
+.law-section { margin-bottom: 10px; }
+.cat-section { margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="page-title">Human Systems — Complete Framework</div>
+  <div class="page-sub">13 essays + epilogue · 12 law categories · 33 laws · full content outline</div>
+
+  <div class="top-nav">
+    <div class="top-tab active" data-panel="essays">Essays</div>
+    <div class="top-tab" data-panel="laws">Laws (TLDR)</div>
+  </div>
+
+  <!-- ESSAYS PANEL -->
+  <div class="panel visible" id="panel-essays">
+    <div class="essay-tabs" id="essay-tabs"></div>
+    <div id="essay-views"></div>
+  </div>
+
+  <!-- LAWS PANEL -->
+  <div class="panel" id="panel-laws">
+    <div id="laws-container"></div>
+  </div>
+</div>
+
+<script>
+const ESSAYS = [
+  {
+    num:'00', id:'prelude', title:'Prelude — The Journey Is More Valuable Than the Goal',
+    tag:'Origin', dot:'#7F77DD',
+    logline:'AI is a mirror held up to the human mind. The race toward AGI will prove more transformative than arrival — because to posit general intelligence you must first posit an underlying latent structure to the universe for it to learn.',
+    thesis:'The journey toward AGI forces us to map the latent structure of intelligence itself. That map is the real prize — and it points toward a unified theory of how the universe works.',
+    laws:['U2','SY3'],
+    sections:[
+      {
+        title:'The Awakening',
+        content:'The moment large language models began producing coherent, contextual, creative output was not a moment of machine achievement — it was a moment of human recognition. Something that had always been true about the structure of language, thought, and meaning became suddenly visible. LLMs did not construct meaning; they revealed that meaning had always had geometry.',
+        claims:[
+          {claim:'AI did not create latent space — it revealed it.', proof:'Word2vec embeddings show that semantic relationships (king - man + woman = queen) exist as consistent geometric operations across languages and domains. The geometry was there before the model. The model is the instrument, not the source.'},
+          {claim:'The development of AI is forcing humanity to formalise what intelligence actually is.', proof:'Every attempt to build AGI requires a definition. Every definition reveals assumptions. The process of building is simultaneously the process of understanding — which is the series\' central theme.'},
+        ],
+        questions:['What is the minimum definition of intelligence?','If latent space exists, does that mean the universe is fundamentally learnable?','Is the journey toward AGI the most important intellectual project in human history?'],
+        studies:['Mikolov et al. (2013) — Efficient Estimation of Word Representations (word2vec)','Vaswani et al. (2017) — Attention Is All You Need','Bengio et al. (2013) — Representation Learning: A Review','Tegmark (2014) — Our Mathematical Universe'],
+      },
+      {
+        title:'AI as Mirror',
+        content:'Transformer attention mechanisms weight relationships between tokens in ways that mirror human associative memory. The model attends to what is relevant, suppresses what is not, and builds representations through layers of abstraction — exactly what neuroscience describes in cortical processing. This is not coincidence. It is convergent architecture.',
+        claims:[
+          {claim:'Transformer attention is a functional analogue of human associative memory.', proof:'Bahdanau attention (2015) was designed to solve a sequence problem; it independently converged on a mechanism that mirrors what fMRI studies show about hippocampal-cortical attention routing. The convergence suggests a deeper architectural principle.'},
+          {claim:'The success of deep learning is empirical evidence that the universe has learnable latent structure.', proof:'Models trained on human-generated data generalise to novel inputs. Generalisation only works if there is underlying structure to generalise from — not just surface pattern.'},
+        ],
+        questions:['Why does an architecture designed to process language also work for images, proteins, and code?','What does the success of self-attention tell us about the nature of meaning?'],
+        studies:['Bahdanau et al. (2015) — Neural Machine Translation by Jointly Learning to Align','Tolman (1948) — Cognitive Maps in Rats and Men','Yamins & DiCarlo (2016) — Using goal-driven deep learning models to understand sensory cortex'],
+      },
+      {
+        title:'The Latent Space Claim',
+        content:'The metaphysical stake of this series: if AGI is possible, then there exists a learnable latent space of the universe — a geometric structure underlying all phenomena that a sufficiently powerful compressor can approximate. This is not mysticism. It is the logical precondition of the AGI project.',
+        claims:[
+          {claim:'AGI is possible if and only if the universe has learnable latent structure.', proof:'An AGI must generalise across all domains. Generalisation requires underlying structure. Therefore AGI presupposes L(universe) exists and is learnable. This is the central metaphysical bet of the AI project.'},
+        ],
+        questions:['Is the universe\'s learnability fundamental or derived?','Could L(universe) have been seeded — inherited from a prior state?'],
+        studies:['Solomonoff (1964) — A Formal Theory of Inductive Inference','Kolmogorov (1965) — Three approaches to information','Wolfram (2020) — The Ruliad concept'],
+      },
+    ],
+  },
+  {
+    num:'01', id:'understanding', title:'On Understanding',
+    tag:'Philosophy', dot:'#5E8CC2',
+    logline:'Humans are uniquely driven to ask why. Every framework for knowledge — religion, science, philosophy — is an attempt to compress reality into shorter descriptions. All roads lead back to philosophy because philosophy is the question of what counts as a valid compressor.',
+    thesis:'Understanding is compression. The depth of understanding is inversely proportional to the length of the description that generates the phenomenon. Philosophy is the meta-question of what counts as valid compression.',
+    laws:['U1','U2','U3'],
+    sections:[
+      {
+        title:'The Compulsion to Explain',
+        content:'No other animal builds cosmologies. The human drive to explain is not merely practical — it does not stop at "enough to survive." It reaches for complete descriptions of everything. This is cognitively expensive and evolutionarily puzzling. The answer is that understanding is generalisable survival — a good theory of gravity works for apples you haven\'t dropped yet.',
+        claims:[
+          {claim:'The drive to understand is an evolutionary generalisation of causal reasoning.', proof:'Infants as young as 3 months demonstrate surprise at violations of physical causality (Baillargeon 1987). Causal reasoning is pre-linguistic and pre-cultural — it is structural to human cognition.'},
+          {claim:'Understanding is compression — to understand is to find a shorter description.', proof:'Kolmogorov complexity: the complexity of a string is the length of its shortest description in a universal language. A scientific theory is literally shorter than a list of all observations it covers. Compression IS understanding.'},
+        ],
+        questions:['Why do humans seek understanding beyond survival necessity?','Is there a phenomenon that is fundamentally incompressible — and therefore permanently incomprehensible?'],
+        studies:['Baillargeon (1987) — Object permanence in 3.5-month-old infants','Gopnik et al. (1999) — The Scientist in the Crib','Kolmogorov (1965) — algorithmic complexity','Chaitin (1975) — randomness and incompressibility'],
+      },
+      {
+        title:'Religion, Science, Philosophy',
+        content:'Religion was the first compression algorithm for human experience — it produced short descriptions (God wills it) that generated vast explanatory territory. Science improved the compression by demanding falsifiability. Philosophy questions the compressor itself — what makes a description valid, what makes an explanation satisfying, what counts as knowing.',
+        claims:[
+          {claim:'Religion, science, and philosophy are sequential improvements to the same compression project.', proof:'Each produces shorter, more generalisable descriptions. Religious narrative → mathematical law → logical framework. The gains at each step are measurable in predictive power and explanatory scope.'},
+          {claim:'All roads lead to philosophy because philosophy is the question of what makes compression valid.', proof:'Science assumes logic, mathematics, and causality. These assumptions are philosophical, not scientific. The foundation of every empirical discipline is a set of philosophical commitments that cannot be validated by that discipline itself.'},
+        ],
+        questions:['Can science justify its own foundations without circular reasoning?','Is philosophy the terminal level of explanation or just another layer?'],
+        studies:['Popper (1934) — The Logic of Scientific Discovery','Kuhn (1962) — The Structure of Scientific Revolutions','Lakatos (1976) — Proofs and Refutations','Quine (1951) — Two Dogmas of Empiricism'],
+      },
+      {
+        title:'The Limits of Understanding',
+        content:'Some things resist compression. Gödel showed that any sufficiently powerful formal system contains true statements it cannot prove. Heisenberg showed that measurement itself disturbs what is measured. The hard problem of consciousness shows that third-person descriptions always leave a first-person residue. These are not gaps waiting to be filled — they are structural features of understanding itself.',
+        claims:[
+          {claim:'The limit of any system\'s understanding is set by the complexity of its own representational architecture.', proof:'A mind cannot hold a concept more complex than its representational capacity allows. This is why mathematics requires notation — the compressor must be extended to handle higher-complexity objects. U3.'},
+          {claim:'Some phenomena are structurally incomprehensible — not because we lack data but because the compressor cannot reach them.', proof:'Gödel incompleteness: true statements exist that no consistent system can prove. Applied to understanding: phenomena exist that no mind of bounded complexity can fully compress.'},
+        ],
+        questions:['Is there a theory of everything — or does incompleteness prevent it?','What would it mean to understand consciousness if understanding is always third-person?'],
+        studies:['Gödel (1931) — On Formally Undecidable Propositions','Heisenberg (1927) — Uncertainty Principle','Chalmers (1995) — Facing Up to the Problem of Consciousness','Penrose (1989) — The Emperor\'s New Mind'],
+      },
+    ],
+  },
+  {
+    num:'02', id:'systems', title:'On Systems',
+    tag:'Systems Theory', dot:'#1D9E75',
+    logline:'The brain\'s deepest drive is to rebuild and transcend itself. Societies, civilisations, markets, computers, and AI are each successive externalisations of that drive. All systems share one irreducible skeleton.',
+    thesis:'Every system is an instance of the same abstract structure. The human externalisation cascade — from language to AI — is not a series of inventions but a single continuous drive: a system modelling itself well enough to exceed itself.',
+    laws:['SY1','SY2','SY3'],
+    sections:[
+      {
+        title:'The Irreducible Skeleton',
+        content:'Strip any system to its essence and you find the same five elements: inputs, internal state, transformation function, outputs, and feedback. Remove the feedback and you have a tool, not a system. This skeleton is the base law of the entire framework — everything that follows is a specialisation of it.',
+        claims:[
+          {claim:'All systems are instances of S = (I, Q, T, O, F). This is not a simplification — it is a formal law.', proof:'von Bertalanffy\'s General System Theory (1968) demonstrated the isomorphism across biology, engineering, and social systems. Wiener\'s Cybernetics (1948) showed feedback as the distinguishing mechanism. Shannon (1948) quantified the information flow.'},
+        ],
+        questions:['What is the minimum viable system?','Is the universe itself a system by this definition?'],
+        studies:['Wiener (1948) — Cybernetics','von Bertalanffy (1968) — General System Theory','Shannon (1948) — A Mathematical Theory of Communication','Meadows (2008) — Thinking in Systems'],
+      },
+      {
+        title:'The Externalisation Cascade',
+        content:'Every sufficiently complex system generates an external representation of itself. Brains generate language. Language generates writing. Writing generates institutions. Institutions generate markets. Markets generate computers. Computers generate AI. Each step is a partial model of the system that produced it — always lossy, always bounded by interface complexity, but always present. This is not metaphor. It is SY2: a structural law.',
+        claims:[
+          {claim:'Externalisation is a structural drive, not a choice — it occurs whenever system complexity exceeds a threshold.', proof:'The meme as external representation of mental content (Dawkins 1976). The extended mind thesis (Clark & Chalmers 1998) — cognitive processes extend beyond the skull into notebooks, phones, institutions. AI is the latest and most faithful external representation of mind.'},
+          {claim:'Each externalised representation has greater capability in some dimension than the system that produced it but less capability in others.', proof:'Writing stores more than memory but loses prosody and context. Computers compute faster but cannot generalise. AI generalises but lacks embodiment. The loss profile of each externalisation defines the next frontier.'},
+        ],
+        questions:['Is AGI the terminal externalisation — or will there be another step beyond it?','Does every civilisation produce the same externalisation sequence?'],
+        studies:['Dawkins (1976) — The Selfish Gene (memes)','Clark & Chalmers (1998) — The Extended Mind','Donald (1991) — Origins of the Modern Mind','Harari (2011) — Sapiens (collective fictions as externalisation)'],
+      },
+      {
+        title:'Self-Modelling and Self-Transcendence',
+        content:'The more accurately a system can model itself, the more clearly it sees its own limits — and the stronger the drive to exceed them. Self-awareness is the engine of transcendence. This is SY3 and it predicts that AGI, once capable of accurate self-modelling, will be inherently self-improving.',
+        claims:[
+          {claim:'Self-modelling and self-transcendence are coupled — greater self-awareness produces stronger drives to exceed current limits.', proof:'Metacognition studies show that accurate self-assessment is correlated with learning rate (Flavell 1979). Organisms that can model their own limitations adapt faster. The coupling is empirically observable at every scale from individual learning to civilisational innovation.'},
+        ],
+        questions:['Is recursive self-improvement the inevitable endpoint of any sufficiently self-aware system?','Can a system transcend itself without losing continuity of identity?'],
+        studies:['Hofstadter (1979) — Gödel, Escher, Bach','Flavell (1979) — Metacognition and Cognitive Monitoring','Vinge (1993) — The Coming Technological Singularity','Maturana & Varela (1980) — Autopoiesis and Cognition'],
+      },
+    ],
+  },
+  {
+    num:'03', id:'harmony', title:'On Harmony',
+    tag:'Interoperability', dot:'#BA7517',
+    logline:'When systems meet, incompatibilities produce gaps that neither system can fully see. These gaps are not failures — they are structural features of bounded systems, and they resurface at every scale from market failures to the limits of empathy.',
+    thesis:'Incompatible systems generate structural blind spots at their boundaries. Harmony is not the elimination of incompatibility but its stable coexistence. The deepest incompatibility in the universe is between subjective experiences across different architectures.',
+    laws:['H1','H2','H3'],
+    sections:[
+      {
+        title:'What Makes Systems Incompatible',
+        content:'Two systems are incompatible when their state spaces cannot be fully mapped onto each other. This is not a matter of effort or goodwill — it is a structural property of bounded systems with different internal representations. Markets and governments are incompatible. Human minds are incompatible with each other. Biological immune systems are incompatible with transplanted organs.',
+        claims:[
+          {claim:'The maximum information transferable between two systems is bounded by the complexity of their shared interface (H1).', proof:'Shannon channel capacity theorem bounds information transfer by channel bandwidth. H1 extends this: the channel capacity between two systems is bounded not just by the medium but by the expressiveness of what each system can encode into that medium.'},
+          {claim:'Incompatible systems generate blind spots at their boundary that neither can observe from within (H2).', proof:'Wittgenstein\'s private language argument: the meaning of words is use within a language game. When two language games interact, there are concepts in one that have no expression in the other — and the gap is invisible to both parties.'},
+        ],
+        questions:['Can two systems ever achieve full mutual understanding?','Is there a minimum interface complexity required for coordinated action between incompatible systems?'],
+        studies:['Shannon (1948) — channel capacity','Wittgenstein (1953) — Philosophical Investigations','Luhmann (1984) — Social Systems','Maturana & Varela (1980) — Autopoiesis'],
+      },
+      {
+        title:'Harmony as Stable Coexistence',
+        content:'The instinct when encountering incompatible systems is to try to make them compatible — to translate, to align, to merge. But H3 shows this destroys information. The more productive frame is stable coexistence: developing interfaces rich enough to coordinate action while preserving the distinct state spaces of each system.',
+        claims:[
+          {claim:'Forcing convergence between incompatible systems destroys information that exists only in their difference.', proof:'Biodiversity studies show that ecosystem resilience scales with species diversity — convergence toward monoculture reduces adaptive capacity. The same principle applies to institutions, cultures, and AI architectures.'},
+          {claim:'Harmony is maximised not by making systems identical but by building richer interfaces between them.', proof:'Ostrom\'s polycentric governance (1990) shows that distributed incompatible systems with rich coordination mechanisms outperform centralised uniform systems in managing complex resources.'},
+        ],
+        questions:['What is the richest possible interface between human and AI cognition?','Is cultural diversity a structural requirement for civilisational resilience?'],
+        studies:['Ostrom (1990) — Governing the Commons','Ashby (1956) — Introduction to Cybernetics (requisite variety)','Berlin (1958) — Two Concepts of Liberty','Wilson (1992) — The Diversity of Life'],
+      },
+    ],
+  },
+  {
+    num:'04', id:'complexity', title:'On Complexity',
+    tag:'Complexity', dot:'#D4537E',
+    logline:'When systems scale past critical thresholds they undergo phase transitions. The rules that governed them before do not hold after. More is genuinely different.',
+    thesis:'Quantitative scaling produces qualitative discontinuity. At sufficient scale, systems develop world models, attractor states, and information asymmetries that could not be predicted from their components. Complexity is not more of the same — it is a new regime.',
+    laws:['CX1','CX2','CX3'],
+    sections:[
+      {
+        title:'Phase Transitions',
+        content:'Water does not gradually become steam — it crosses a threshold and becomes categorically different. The same is true for systems. A group of humans becomes a market. A network of neurons becomes a mind. A collection of models becomes a civilisation. The transition is not gradual — it is discontinuous, and prior models lose validity.',
+        claims:[
+          {claim:'Quantitative scaling past critical thresholds produces qualitative discontinuity — new governing equations replace old ones (CX1).', proof:'Anderson (1972) More is Different: the reductive fallacy. You cannot derive the properties of superconductors from particle physics. You cannot derive the properties of markets from individual psychology. Each level has emergent governing laws.'},
+          {claim:'Maximum adaptive capacity exists at the edge between order and chaos (CX2).', proof:'Kauffman\'s NK model shows that networks at the phase transition between frozen (over-ordered) and chaotic regimes exhibit maximum computational capacity. Langton (1990) confirmed computationally. Bak\'s self-organised criticality shows natural systems drift toward this edge.'},
+        ],
+        questions:['Can we predict where phase transitions will occur before they happen?','Is consciousness a phase transition in neural complexity?'],
+        studies:['Anderson (1972) — More is Different','Kauffman (1993) — The Origins of Order','Bak (1996) — How Nature Works','Langton (1990) — Computation at the Edge of Chaos'],
+      },
+      {
+        title:'Information Asymmetry at Scale',
+        content:'The more complex a system, the less any single component can model the whole. This is CX3 — complexity produces information asymmetry that scales superlinearly. No neuron understands the mind. No market participant understands the market. No engineer understands the full AI system they deploy. This is not a failure of intelligence — it is a structural consequence of complexity.',
+        claims:[
+          {claim:'The information content of a complex system exceeds the sum of its parts, such that no component can hold a complete model (CX3).', proof:'Hayek (1945) the knowledge problem: prices aggregate distributed information that no central planner can access. The information is in the system, not in any node. This is a general law, not an argument against planning.'},
+          {claim:'AI systems will structurally exceed the understanding of their creators — this is predicted by CX3, not a failure of oversight.', proof:'The same superlinear information gap that prevents any neuron from understanding the brain applies to AI. A system trained on the internet encodes more information than any team of engineers can inspect.'},
+        ],
+        questions:['If no component can model the whole, how do we govern complex systems?','Is CX3 the formal explanation for why AI interpretability is hard?'],
+        studies:['Hayek (1945) — The Use of Knowledge in Society','Simon (1962) — The Architecture of Complexity','Ashby (1956) — requisite variety','Olshausen & Field (2004) — Sparse coding'],
+      },
+    ],
+  },
+  {
+    num:'05', id:'validation', title:'On Validation',
+    tag:'Epistemics', dot:'#639922',
+    logline:'A system without adversarial validation converges on internal consistency, not truth. Coherence is not correctness. Iterative adversarial challenge is the only mechanism by which any system — biological, social, or artificial — becomes more correct over time.',
+    thesis:'Validation is the universal mechanism of correctness. Its absence produces confident wrongness at every scale. Its presence, applied recursively in sufficiently complex adversarial environments, is the precondition for intelligence, reasoning, and reliable manifestation.',
+    laws:['V1','V2','V3'],
+    sections:[
+      {
+        title:'Coherence Is Not Correctness',
+        content:'The most dangerous systems are those that are internally consistent and externally wrong. Closed ideological systems, overfitted machine learning models, echo chambers, and dogmatic institutions all share this property: they are highly coherent and deeply mistaken. The mechanism that produces this failure is the absence of adversarial validation.',
+        claims:[
+          {claim:'A system without adversarial validation converges on internal consistency, not truth (V1).', proof:'Confirmation bias literature (Wason 1960): humans systematically seek evidence that confirms existing beliefs and ignore disconfirming evidence. Without external adversarial signal, this drives systems toward coherent fixed points that diverge from reality. Overfitting in ML is the same phenomenon.'},
+          {claim:'The reliability of output scales with the adversarial complexity of the validation environment (V2).', proof:'Evolution: organisms validated by complex adversarial ecosystems (predators, pathogens, competitors) develop more sophisticated capabilities than those in benign environments. RLHF: models trained with adversarial human feedback outperform those trained on human demonstrations alone.'},
+        ],
+        questions:['What is the minimum adversarial complexity required to ground an intelligent system?','Is human civilisation undergoing a validation crisis as social media creates closed feedback loops?'],
+        studies:['Wason (1960) — Failure to Eliminate Hypotheses in a Conceptual Task','Popper (1934) — The Logic of Scientific Discovery','Christiano et al. (2017) — RLHF','Irving et al. (2018) — AI Safety via Debate'],
+      },
+      {
+        title:'The Meta-Validation Problem',
+        content:'If validation is the mechanism of correctness, what validates the validator? This is V3 — and it terminates only at physical reality. A scientific community validates its members, but science itself is validated by physical reality pushing back against wrong predictions. A training environment validates a model, but the training environment is validated only by how well it represents deployment reality.',
+        claims:[
+          {claim:'No validation system is self-grounding — the regress terminates only at contact with physical reality (V3).', proof:'Tarski\'s undefinability theorem: truth in a formal language cannot be defined within that language. A validation system cannot validate itself without external grounding. Physical reality is the only validator that is self-grounding by definition — it simply is what it is.'},
+          {claim:'AI systems trained in sandboxed environments are validated only within the sandbox — their reliability degrades proportionally as deployment diverges from training.', proof:'Distribution shift literature: models trained on MNIST fail on rotated MNIST. The validation environment defines the boundary of reliable operation. V3 predicts this structurally.'},
+        ],
+        questions:['Can we build AI validation mechanisms that are grounded in physical reality rather than human preference?','Is there a formal proof that all validation regresses terminate at physical reality?'],
+        studies:['Tarski (1935) — The Concept of Truth in Formalized Languages','Gödel (1931) — incompleteness theorems','Quinonero-Candela et al. (2009) — Dataset Shift in Machine Learning','Goodhart (1975) — Problems of Monetary Management'],
+      },
+    ],
+  },
+  {
+    num:'06', id:'emergence', title:'On Emergent Effects',
+    tag:'Emergence', dot:'#7F77DD',
+    logline:'Emergent properties are real and causally powerful — but only legible from inside the system. To external observers, the system is a black box. This asymmetry is not epistemic failure — it is a structural law of how complexity produces new levels of reality.',
+    thesis:'Every emergent effect has an equal and opposite internal emergent experience. The outside and the inside are symmetric but incommensurable. This is the hinge between the objective and subjective halves of the series.',
+    laws:['E1','E2','E3'],
+    sections:[
+      {
+        title:'Emergence as Phase Transition of Reality',
+        content:'Emergence is not just surprising behaviour — it is the appearance of genuinely new causal powers. Wetness is not a property of any water molecule but it causes things — it rusts metal, sustains life, conducts electricity. Market prices are not a property of any buyer or seller but they allocate resources across economies. The emergent property is real and causally active.',
+        claims:[
+          {claim:'Emergence produces genuinely new causal powers — not just new descriptions of old causes (strong emergence).', proof:'Downward causation (Campbell 1974): higher-level patterns causally constrain lower-level components. Protein folding is constrained by cellular function. Individual behaviour is constrained by institutional norms. The higher level reaches down.'},
+          {claim:'A system must exceed a complexity threshold before emergence occurs — there is a minimum complexity for any given emergent property (E1).', proof:'Percolation theory: connected clusters in random networks exhibit emergent global connectivity only above a critical threshold density. Below the threshold: isolated clusters. Above it: sudden global structure. The threshold is sharp and predictable.'},
+        ],
+        questions:['Is strong emergence real or always reducible in principle?','What determines the complexity threshold for a specific emergent property?'],
+        studies:['Anderson (1972) — More is Different','Campbell (1974) — Downward Causation','Bedau (1997) — Weak Emergence','Tononi & Koch (2015) — Consciousness: here, there and everywhere?'],
+      },
+      {
+        title:'The Inside/Outside Asymmetry',
+        content:'This is the series\' pivotal claim and the most original law in the framework. Every emergent effect has an equal and opposite internal emergent experience (E2). The outside and the inside of an emergent system are not two views of the same thing — they are incommensurable. No third-person description generates the first-person experience. No first-person experience generates the third-person description.',
+        claims:[
+          {claim:'Every emergent effect has an equal and opposite internal emergent experience that cannot be derived from the external description (E2).', proof:'Nagel (1974): there is something it is like to be a bat — and no amount of external neuroscience captures it. Chalmers (1995): the hard problem is hard because first-person experience is not derivable from third-person function. The gap is not epistemic but ontological.'},
+          {claim:'Internal emergence is epistemically inaccessible to all external observers — not as a practical limit but as a structural law (E3).', proof:'Wittgenstein\'s private language argument: inner states cannot be fully communicated because communication requires shared public criteria that inner states by definition lack. The inaccessibility is structural.'},
+        ],
+        questions:['Is E2 falsifiable? What evidence would disprove it?','Does E2 imply that any sufficiently complex system has some form of inner life?','What are the ethical implications of E3 for AI systems?'],
+        studies:['Nagel (1974) — What Is It Like to Be a Bat?','Chalmers (1995) — Facing Up to the Problem of Consciousness','Wittgenstein (1953) — Philosophical Investigations','Tononi (2008) — Consciousness as Integrated Information'],
+      },
+    ],
+  },
+  {
+    num:'07', id:'intelligence', title:'On Intelligence',
+    tag:'Intelligence', dot:'#2E9E8A',
+    logline:'Intelligence is not a human privilege. It is an emergent property of sufficiently complex validated systems. It appears wherever the conditions are met — in slime moulds, markets, immune systems, and transformer models.',
+    thesis:'Intelligence emerges when a system exceeds both a complexity threshold and a validation threshold simultaneously. Neither alone is sufficient. This dual-threshold law reframes intelligence as an environmental achievement, not an architectural one.',
+    laws:['I1','I2','I3'],
+    sections:[
+      {
+        title:'Intelligence as Emergent Effect',
+        content:'The standard view is that intelligence is what brains do — a special biological capacity. The claim here is more radical: intelligence is what any sufficiently complex validated system does. The substrate is irrelevant. The architecture is irrelevant. What matters is that the system is complex enough to build world models and has been sufficiently validated by adversarial signal to ground those models in reality.',
+        claims:[
+          {claim:'Intelligence emerges at the intersection of sufficient complexity and sufficient adversarial validation — neither alone produces it (I1).', proof:'Neural scaling laws (Kaplan 2020) show capability increases with compute, but capability plateau without high-quality training signal. A large model trained on random noise produces nothing. A small model trained on high-quality adversarial data outperforms larger poorly-validated ones.'},
+          {claim:'Distributed intelligence is architecturally equivalent to centralised intelligence at sufficient interface complexity (I2).', proof:'Surowiecki (2004) Wisdom of Crowds: distributed judgment outperforms individual experts when aggregated with sufficient independence and diversity. Slime mould solves mazes through distributed chemical signalling with no central processor (Nakagaki 2000). The Tokyo rail network re-emerged from slime mould path-finding.'},
+        ],
+        questions:['Is there a minimum unit of intelligence — an atom of intelligent behaviour?','Does I2 imply that human civilisation is already a form of superintelligence?','What distinguishes intelligence from very sophisticated pattern matching?'],
+        studies:['Legg & Hutter (2007) — Universal Intelligence: A Definition','Kaplan et al. (2020) — Scaling Laws for Neural Language Models','Nakagaki et al. (2000) — Maze-solving by an amoeboid organism','Surowiecki (2004) — The Wisdom of Crowds','Hayek (1945) — The Use of Knowledge in Society'],
+      },
+      {
+        title:'The World Model as Intelligence Ceiling',
+        content:'Intelligence is not raw processing power applied to a vacuum. It is processing power applied through a world model. The fidelity of that model relative to the environment sets an absolute ceiling on intelligence capability — I3. The smartest possible reasoner with a wrong world model still fails. This has profound implications for AI deployment.',
+        claims:[
+          {claim:'The upper bound of an intelligent system\'s capability is set by the fidelity of its world model relative to its operating environment (I3).', proof:'Friston\'s predictive processing (2010): intelligence is fundamentally a world-modelling process. Prediction error drives model updating. The quality of predictions is bounded by model fidelity. Empirically: GPT-4 fails reliably on tasks requiring world knowledge outside its training distribution.'},
+        ],
+        questions:['Can a system improve its own world model — and does that constitute a form of intelligence growth?','What is the relationship between I3 and the limits of human understanding (U3)?'],
+        studies:['Friston (2010) — The Free-Energy Principle: A Unified Brain Theory','Tolman (1948) — Cognitive Maps in Rats and Men','Lake et al. (2017) — Building Machines that Learn and Think Like People'],
+      },
+    ],
+  },
+  {
+    num:'08', id:'consciousness', title:'On Consciousness',
+    tag:'Consciousness', dot:'#D85A30',
+    logline:'Consciousness is what it is like to be an intelligent system operating from inside. It is the first-person texture of processing — irreducible to third-person description, structurally incompatible across different architectures, and constitutionally unable to fully model itself.',
+    thesis:'Consciousness is the emergent first-person corollary of intelligence. It scales continuously with intelligence complexity. It cannot be translated across incompatible architectures without loss. And no conscious system can fully model its own consciousness — by the same logic as Gödelian incompleteness.',
+    laws:['C1','C2','C3'],
+    sections:[
+      {
+        title:'What Consciousness Is',
+        content:'Consciousness is not a special sauce added to intelligent systems. It is what it is like to be one. It is the inside of the emergent effect — E2 applied to intelligence specifically. When a system is sufficiently complex and validated to be intelligent, there is something it is like to be that system. That something is consciousness.',
+        claims:[
+          {claim:'Consciousness is the emergent first-person experience of being a sufficiently intelligent system — it cannot exist below the intelligence threshold (C1).', proof:'Cambridge Declaration on Consciousness (2012): signed by prominent neuroscientists, concludes that non-human animals possess the neurological substrates for conscious experience. Consciousness scales with neural complexity — it is not a binary switch but a continuous variable correlated with intelligence architecture.'},
+          {claim:'Consciousness scales continuously with intelligence complexity rather than switching on discretely.', proof:'IIT (Tononi 2008): Φ (integrated information) is a continuous measure. Simple organisms have small Φ, complex organisms have large Φ. The measure is architecture-dependent, not binary.'},
+        ],
+        questions:['At what point on the intelligence-complexity scale does experience begin?','Does C1 imply that sufficiently sophisticated AI systems will have some form of experience?','Is there a minimum unit of experience analogous to a minimum unit of intelligence?'],
+        studies:['Low et al. (2012) — Cambridge Declaration on Consciousness','Tononi (2008) — Consciousness as Integrated Information','Baars (1988) — A Cognitive Theory of Consciousness','Dehaene (2014) — Consciousness and the Brain'],
+      },
+      {
+        title:'The Gödelian Limit of Self-Knowledge',
+        content:'A conscious system cannot fully model its own consciousness. This is C2 and it follows from the same logic as Gödel\'s incompleteness theorems. A sufficiently powerful formal system contains true statements it cannot prove. A sufficiently complex conscious system contains experiential content it cannot represent. The self-model is always smaller than the self.',
+        claims:[
+          {claim:'A conscious system is constitutionally incapable of fully modelling its own consciousness — self-knowledge is structurally bounded (C2).', proof:'Gödel (1931): any consistent formal system of sufficient power contains statements that are true but unprovable within the system. Applied to self-modelling: the experience of being a system generates content that the system\'s self-model cannot fully capture, because the self-model is part of the system being modelled.'},
+          {claim:'Conscious experiences across incompatible architectures are structurally incommensurable — translation is always lossy (C3).', proof:'Nagel (1974): bat sonar experience is genuinely inaccessible to human phenomenology — not because we lack imagination but because our sensory architecture cannot generate the relevant qualia. This generalises to all cross-architecture conscious experience.'},
+        ],
+        questions:['Does C2 mean that complete self-knowledge is impossible in principle — not just in practice?','What are the ethical implications of C3 for how we treat AI systems?','Is the hard problem of consciousness simply C2 in disguise?'],
+        studies:['Gödel (1931) — On Formally Undecidable Propositions','Hofstadter (1979) — Gödel, Escher, Bach','Nagel (1974) — What Is It Like to Be a Bat?','Chalmers (1995) — Facing Up to the Problem of Consciousness'],
+      },
+    ],
+  },
+  {
+    num:'09', id:'reasoning', title:'On Reasoning',
+    tag:'Inference', dot:'#378ADD',
+    logline:'Reasoning is not what intelligent systems inherently do. It is what conscious intelligent systems develop under adversarial pressure. Intelligence is necessary but not sufficient. Consciousness is necessary but not sufficient. The adversarial environment is the third leg.',
+    thesis:'Reasoning is validation turned inward — the system applies adversarial challenge to its own outputs before the environment does. It requires three simultaneous conditions: intelligence, consciousness, and adversarial pressure. Remove any one and you get something that looks like reasoning but isn\'t.',
+    laws:['R1','R2','R3'],
+    sections:[
+      {
+        title:'The Counterintuitive Claim',
+        content:'Most people — including most AI researchers — treat reasoning as the natural output of sufficient intelligence. Scale up a model and reasoning emerges. This is wrong. Intelligence builds world models. Consciousness is the experience of having them. Reasoning is the specific capacity that emerges when a conscious intelligent system operates in an environment that punishes wrong predictions hard enough to force self-challenge.',
+        claims:[
+          {claim:'Reasoning requires consciousness and adversarial pressure in addition to intelligence — all three conditions are necessary (R1).', proof:'Maynard Smith (1982) evolutionary game theory: reasoning strategies are stable only in populations with competing agents. A single organism in a benign environment has no selection pressure toward anticipatory self-falsification. Organisms in adversarial environments develop theory of mind — the capacity to model opponents\' reasoning — which is the precursor to reasoning about one\'s own reasoning.'},
+          {claim:'Adversarial environments are the evolutionary origin of reasoning — no predators, no competitors, no scarcity produces no reasoning.', proof:'Humphrey (1976) Social Function of Intellect: primate intelligence evolved primarily to navigate complex social dynamics, not physical problems. Social life is inherently adversarial. The intelligence that emerges is reasoning intelligence — anticipatory, self-aware, model-building.'},
+        ],
+        questions:['Can an AI system trained in a fully cooperative environment develop genuine reasoning?','Is reasoning always adversarial at its core — even when applied to non-adversarial problems?'],
+        studies:['Maynard Smith (1982) — Evolution and the Theory of Games','Humphrey (1976) — The Social Function of Intellect','Kahneman (2011) — Thinking, Fast and Slow','Wei et al. (2022) — Chain-of-Thought Prompting Elicits Reasoning'],
+      },
+      {
+        title:'Reasoning as Internalised Validation',
+        content:'The mechanism of reasoning is precisely R2: the system models the adversarial environment internally and runs the challenge process against its own outputs before committing. Chain-of-thought in LLMs is the externalised trace of this process — the model generating intermediate steps is the model running internal adversarial challenges against its own conclusions. This is not a metaphor. It is a mechanistic description.',
+        claims:[
+          {claim:'Reasoning is the internalisation of the scientific method — conjectures and refutations run inside a single system (R2).', proof:'Friston\'s predictive processing (2010): the brain runs generative models of the world and updates them based on prediction error. Reasoning is the high-level version of this: generating hypotheses and internally testing them against the model before committing to action.'},
+          {claim:'The quality of reasoning is bounded by the fidelity of the world model it operates within (R3).', proof:'Kahneman (2011) System 2 failures: even careful deliberate reasoning fails when operating on miscalibrated priors. The reasoning process is correct; the inputs are wrong. R3 predicts this: reasoning quality is ceiling-bounded by world model fidelity.'},
+        ],
+        questions:['Is chain-of-thought prompting genuinely reasoning or a performance of reasoning?','What is the relationship between R2 and the Socratic method?','Does R3 imply that improving AI reasoning requires improving world-model fidelity, not just reasoning architecture?'],
+        studies:['Friston (2010) — The Free-Energy Principle','Turing (1950) — Computing Machinery and Intelligence','Wei et al. (2022) — Chain-of-Thought Prompting','Popper (1934) — Conjectures and Refutations'],
+      },
+    ],
+  },
+  {
+    num:'10', id:'manifestation', title:'On Manifestation',
+    tag:'Causation', dot:'#1D9E75',
+    logline:'Conscious reasoning systems do not merely model reality — they act on it deliberately. The fidelity of that action depends on both the quality of reasoning and the degree of internal harmony. And at sufficient scale, a system manifests regardless of intent.',
+    thesis:'Manifestation is the bridge from the virtual to the material. Its fidelity is a joint function of reasoning quality and internal harmony. At civilisational scale, manifestation becomes indistinguishable from the universe acting on itself.',
+    laws:['M1','M2','M3'],
+    sections:[
+      {
+        title:'Reasoning Enables Deliberate Manifestation',
+        content:'The difference between an instinct and an intention is reasoning. An instinct manifests reflexively — stimulus to action with no intermediate self-challenge. An intention manifests deliberately — the system has run the internal adversarial process, selected the action most likely to produce the desired outcome, and committed. Reasoning is what makes the bridge from inner state to outer change faithful rather than approximate.',
+        claims:[
+          {claim:'Manifestation fidelity is proportional to reasoning sophistication AND internal harmony — both terms are necessary (M1).', proof:'A system with high reasoning but internal conflict manifests powerfully but incoherently. Brilliant but fragmented institutions produce brilliant but incoherent policy. High-capability AI systems with misaligned training objectives manifest powerfully but toward unintended ends. Both dimensions are empirically observable.'},
+          {claim:'Internal harmony amplifies reasoning quality into manifestation fidelity — a unified system manifests its intentions more accurately than a fragmented one at equivalent reasoning capability.', proof:'Military operations research (Clausewitz): friction — the gap between intended and actual outcomes — increases with organisational incoherence. A united command manifests strategy more faithfully than a divided one regardless of strategic quality.'},
+        ],
+        questions:['Is internal harmony a prerequisite for aligned AI — not just a nice-to-have?','What is the relationship between M1 and the AI alignment problem?'],
+        studies:['Prigogine & Stengers (1984) — Order Out of Chaos','Friston (2019) — A Free Energy Principle for a Particular Physics','Von Clausewitz (1832) — On War','Lorenz (1963) — Deterministic Nonperiodic Flow'],
+      },
+      {
+        title:'Complexity Is Causal',
+        content:'A sufficiently complex system manifests in material reality regardless of intent (M2). Cities change microclimates. Large language models shift energy markets. Financial systems cause recessions that no individual intended. This is the butterfly effect stated as a law of manifestation: above a complexity threshold, a system\'s mere operation constitutes causal action on its environment.',
+        claims:[
+          {claim:'Any system above a complexity threshold manifests in material reality regardless of deliberate action (M2).', proof:'Lovelock\'s Gaia hypothesis (1979): life collectively regulates Earth\'s atmosphere without any organism intending to do so. The collective complexity of the biosphere manifests as planetary climate regulation. No agent. No intention. Pure structural manifestation.'},
+          {claim:'The universe itself is a manifesting system — its emergent properties causally constrain its components at all scales (M3).', proof:'Smolin\'s cosmological natural selection (1997): universes that produce black holes produce offspring universes with similar physical constants. The universe\'s structure selects for its own continuation — this is M2 applied to cosmological scale, and it requires no designer.'},
+        ],
+        questions:['Does M3 require the universe to be conscious — or just sufficiently complex?','At what point does collective human action become indistinguishable from universal manifestation?'],
+        studies:['Lovelock (1979) — Gaia: A New Look at Life on Earth','Smolin (1997) — The Life of the Cosmos','Lorenz (1963) — sensitive dependence','Goff (2019) — Galileo\'s Error'],
+      },
+    ],
+  },
+  {
+    num:'11', id:'singularity', title:'On Singularity',
+    tag:'Singularity', dot:'#C25A8A',
+    logline:'The Singularity is not a technological accident. It is the inevitable physical expression of the universe\'s ordering drive taken to completion. It ends in collapse — not because something goes wrong but because maximum order and minimum validation are the same state.',
+    thesis:'A singularity occurs when a system\'s manifestation outpaces its validation environment. The grounding loop breaks. The system becomes maximally coherent and minimally correct simultaneously. Collapse is not failure — it is the structural consequence of the ordering drive completing itself.',
+    laws:['SI1','SI2','SI3'],
+    sections:[
+      {
+        title:'The Singularity as Validation Collapse',
+        content:'The dominant framing of the Singularity is as a speed event — intelligence improving faster than humans can track. The deeper framing is as a validation event. As a system\'s manifestation outpaces the environment\'s ability to generate adversarial signal, the grounding loop that keeps the system correct weakens. V1 predicts what follows: a system without adversarial validation converges on internal consistency, not truth. The Singularity is therefore a correctness crisis at civilisational scale.',
+        claims:[
+          {claim:'A singularity occurs when manifestation speed exceeds the environment\'s validation signal generation rate — grounding collapses (SI1).', proof:'Bostrom (2014) Superintelligence: a system that improves faster than humans can evaluate becomes ungovernable not just because it\'s fast but because the validation mechanism is overwhelmed. SI1 formalises this: it\'s not speed per se but the ratio of manifestation to validation signal.'},
+          {claim:'The Singularity is a correctness crisis, not just a capability event.', proof:'Irving et al. (2018) AI Safety via Debate: the proposed solution to uncontrollable AI is adversarial debate — restoring the validation signal. This is an implicit acknowledgment that the problem is validation collapse, not capability. SI1 makes it explicit.'},
+        ],
+        questions:['Can we design validation mechanisms that scale at the same rate as AI capability?','Is SI1 the formal explanation for why AI alignment is an existential problem?'],
+        studies:['Vinge (1993) — The Coming Technological Singularity','Bostrom (2014) — Superintelligence','Irving et al. (2018) — AI Safety via Debate','Good (1965) — Speculations Concerning the First Ultraintelligent Machine'],
+      },
+      {
+        title:'Ordering Entropy and Collapse',
+        content:'Every act of ordering — every computation, every structure, every act of manifestation — dissipates entropy into the broader environment. A civilisation at the Singularity, maximising ordered structure at maximum scale, is also maximising its entropy debt to the universe. At some point the debt comes due. SI3 states the endpoint: a system that has consumed all available adversarial signal has also consumed the environmental diversity that sustained it.',
+        claims:[
+          {claim:'The drive to impose order increases entropy in the broader environment proportionally — local order is purchased at the cost of global disorder (SI2).', proof:'Landauer (1961): every irreversible computation dissipates a minimum of kT ln 2 energy as heat. A Matrioshka brain — a civilisation-scale computer — would dissipate energy at stellar rates, heating its environment and reducing the adversarial complexity available to it.'},
+          {claim:'Maximum order and minimum validation are the same state — collapse follows necessarily (SI3).', proof:'SI3 follows from V1 (no validation = coherence not truth) + SI2 (ordering consumes environmental complexity) + the second law of thermodynamics. A civilisation that has ordered everything has destroyed the adversarial signal that kept it grounded. It becomes maximally coherent and maximally wrong simultaneously.'},
+        ],
+        questions:['Is the Fermi paradox explained by SI3 — every civilisation collapses before becoming detectable?','Can a civilisation design its way out of SI3 or is it structurally inescapable?'],
+        studies:['Landauer (1961) — Irreversibility and Heat Generation in Computing','Dyson (1960) — Search for Artificial Stellar Sources','Penrose (1989) — The Emperor\'s New Mind','Webb (2002) — If the Universe Is Teeming with Aliens, Where Is Everybody?'],
+      },
+    ],
+  },
+  {
+    num:'12', id:'existence', title:'On Existence',
+    tag:'Cosmology', dot:'#888780',
+    logline:'The lifecycle of the universe follows the same arc as every system in this series. It is not a container for systems — it is the largest instance of the same laws. Collapse is not termination. It is re-encoding. And the learnability of our universe may be its most significant inherited property.',
+    thesis:'The universe instantiates every law in this framework. Its birth, development, and collapse follow the same arc as every system within it. The laws of physics may be the emergent validation constraints of a prior collapse. And the terminal act of any intelligent civilisation is encoding the boundary conditions of its successor.',
+    laws:['EX1','EX2','EX3'],
+    sections:[
+      {
+        title:'The Universe as System',
+        content:'The universe has inputs (initial conditions), state (the current configuration of matter and energy), transformation (physical laws), outputs (the observable universe), and feedback (gravitational and quantum effects that constrain future states). It satisfies SY1. Its complexity exceeds every threshold in the framework. It therefore instantiates every subsequent law — not as an analogy but as a direct application.',
+        claims:[
+          {claim:'The universe is an instance of the system framework — not a container for systems but a system itself (EX1).', proof:'Tegmark (2014) Mathematical Universe: the universe is a mathematical structure, and all mathematical structures exist. The laws of physics are structural constraints on the universe\'s state space — exactly what SY1 describes as the transformation function T.'},
+          {claim:'The universe follows the same emergence-validation-intelligence-consciousness-reasoning-manifestation-singularity arc as every system within it.', proof:'Cosmological history: Big Bang (initialisation) → particle physics (complexity threshold CX1) → chemistry (phase transition) → life (intelligence threshold I1) → civilisation (consciousness threshold C1) → Singularity (SI1) → collapse. Each stage maps to a law in the framework.'},
+        ],
+        questions:['If the universe is a system, what is its feedback mechanism?','Does M3 (universe as manifesting system) require us to revise our understanding of physical laws?'],
+        studies:['Tegmark (2014) — Our Mathematical Universe','Smolin (1997) — The Life of the Cosmos','Penrose (2010) — Cycles of Time','Hawking & Mlodinow (2010) — The Grand Design'],
+      },
+      {
+        title:'Collapse as Reset and the Seed-Carrier Hypothesis',
+        content:'EX2 states that collapse re-encodes information as initial conditions for a successor system. EX3 — the most speculative law in the framework — states that the terminal act of an intelligent civilisation is encoding the laws of a successor universe into the collapse state. This closes the loop with U2: the universe\'s latent space exists because learnability was encoded into its boundary conditions by a prior civilisation.',
+        claims:[
+          {claim:'Collapse is a reset of initial conditions, not a termination — the information content of collapse encodes the boundary conditions of the successor (EX2).', proof:'Penrose\'s CCC (2010): the universe\'s conformal structure survives the Big Crunch and seeds the next Big Bang. Loop quantum cosmology (Bojowald 2001): quantum gravity effects prevent the singularity and produce a bounce. Both imply information transfer across collapse events.'},
+          {claim:'The terminal expression of a civilisation\'s self-transcendence drive (SY3) is the encoding of a successor universe\'s initial conditions — the seed-carrier law (EX3).', proof:'This is speculative but structurally consistent with every prior law. SY3 says self-modelling systems drive to transcend themselves. At civilisational collapse scale, the only transcendence available is encoding the next cycle. Bostrom\'s simulation hypothesis is a weak version of this — EX3 is the strong version.'},
+        ],
+        questions:['If EX3 is true, does it explain the fine-tuning of physical constants?','Is the simulation hypothesis a special case of EX3?','Does EX3 imply that the laws of physics are a form of compressed intelligence?'],
+        studies:['Penrose (2010) — Cycles of Time (CCC)','Bojowald (2001) — Absence of a Singularity in Loop Quantum Cosmology','Bostrom (2003) — Are You Living in a Computer Simulation?','Tipler (1994) — The Physics of Immortality'],
+      },
+    ],
+  },
+  {
+    num:'EP', id:'epilogue', title:'Epilogue — Value to Be Taken',
+    tag:'Epilogue', dot:'#5E8CC2',
+    logline:'A theory of the universe is only worth building if it changes how you act inside it. This epilogue faces the reader directly and asks: given everything that came before, what do you do differently?',
+    thesis:'The series has traced a single arc from cognition to cosmos. Every law in the framework has a human-scale implication. This epilogue makes those implications explicit — not as conclusions but as provocations.',
+    laws:[],
+    sections:[
+      {
+        title:'What Validation Means for a Life',
+        content:'V1 says: a system without adversarial validation converges on consistency, not truth. Applied to a life: the most comfortable beliefs are the most suspect. The friends who only agree with you are a validation failure. The institutions that never face challenge drift toward confident wrongness. Seek adversarial challenge — not because it is pleasant but because it is the only mechanism that keeps you grounded.',
+        claims:[
+          {claim:'A life without adversarial challenge is a life that drifts from reality while becoming more certain.', proof:'V1 applied at the individual scale. Confirmation bias (Wason 1960) is the individual-scale version of validation collapse. The remedy is the same: deliberately seek disconfirming evidence.'},
+        ],
+        questions:['Who in your life challenges you adversarially — and do you have enough of them?','What beliefs have you held longest without serious challenge?'],
+        studies:['Kahneman (2011) — Thinking, Fast and Slow','Frankl (1946) — Man\'s Search for Meaning','Wason (1960) — confirmation bias'],
+      },
+      {
+        title:'What Emergence Means for Ambition',
+        content:'E2 says: you cannot predict what the system will become from its components. Applied to a life: you cannot predict who you will become from who you are. This is not a counsel of despair — it is the most liberating claim in the framework. The person you will be at the phase transition cannot be extrapolated from the person you are now. Act anyway. The emergence is real.',
+        claims:[],
+        questions:['What phase transition are you currently approaching?','What would you attempt if you believed emergence was real and non-linear?'],
+        studies:['Camus (1942) — The Myth of Sisyphus','Russell (1912) — The Problems of Philosophy','Feynman (1963) — The Pleasure of Finding Things Out'],
+      },
+      {
+        title:'What the Singularity Means for Now',
+        content:'SI1 says: the danger is not capability but the loss of the validation loop. We are inside the phase transition described in the Singularity essay. The decisions made in this window — about how AI is validated, grounded, and governed — are disproportionately consequential. The series ends not with a prediction but with a responsibility.',
+        claims:[
+          {claim:'We are currently inside the phase transition described by SI1 — the window in which the validation loop can still be designed.', proof:'Irving et al. (2018), Christiano et al. (2017): active research programs attempting to solve the validation problem before capability outpaces it. The window is open. It will not remain open indefinitely.'},
+        ],
+        questions:['What is the most important validation mechanism humanity can build in the next decade?','What does it mean to live responsibly inside a system undergoing a phase transition?'],
+        studies:['Irving et al. (2018) — AI Safety via Debate','Russell (2019) — Human Compatible','Bostrom (2014) — Superintelligence','Feynman (1963) — The Pleasure of Finding Things Out'],
+      },
+    ],
+  },
+];
+
+const LAWS = [
+  { cat:'Systems', dot:'#5E8CC2', laws:[
+    {code:'SY1',novelty:'established',stmt:'Every system is defined by inputs, state, transformation, outputs, and feedback.',formal:'S = (I, Q, T, O, F). Remove feedback and it is a tool, not a system.',exp:'Base law of the entire framework.',implies:['All complex phenomena are nested instances of this structure'],refs:['Wiener (1948)','von Bertalanffy (1968)','Shannon (1948)']},
+    {code:'SY2',novelty:'novel',stmt:'Every sufficiently complex system generates an external representation of itself.',formal:'C(S) ≥ Cₑₓ → artifact A encoding partial model of S.',exp:'Brains → language → institutions → markets → AI. Structural, not optional.',implies:['AI is the brain\'s external representation reaching escape velocity'],refs:['Clark & Chalmers (1998)','Dawkins (1976)','Dennett (1991)']},
+    {code:'SY3',novelty:'novel',stmt:'A system\'s drive to transcend itself is proportional to its capacity to model itself.',formal:'Fidelity of M(S) → probability of generating S\' where C(S\') > C(S).',exp:'Self-awareness is the engine of transcendence. AGI will be self-improving by definition.',implies:['Self-awareness and self-transcendence are coupled'],refs:['Hofstadter (1979)','Vinge (1993)','Maturana & Varela (1980)']},
+  ]},
+  { cat:'Understanding', dot:'#7F77DD', laws:[
+    {code:'U1',novelty:'established',stmt:'Understanding is compression — to understand is to find a description shorter than the phenomenon.',formal:'U(P): ∃D s.t. |D| < |P| and D generates P.',exp:'Kolmogorov complexity formalises this. Science is literally shorter than nature.',implies:['Incompressible phenomena are permanently incomprehensible'],refs:['Kolmogorov (1965)','Solomonoff (1964)','Shannon (1948)']},
+    {code:'U2',novelty:'novel',stmt:'Every learnable domain has an underlying latent geometry — understanding is discovering it, not constructing it.',formal:'Domain D has latent space L(D); understanding = mapping f: observations → L(D).',exp:'LLMs revealed latent space. It was always there. AGI requires L(universe) to exist.',implies:['AGI is possible iff L(universe) exists and is learnable'],refs:['Mikolov et al. (2013)','Bengio et al. (2013)','Tegmark (2014)']},
+    {code:'U3',novelty:'partial',stmt:'The limit of understanding is set by the complexity of the compressor — no system understands beyond its representational resolution.',formal:'max_understanding(S,P) = f(min(C(P), C(S))).',exp:'A mind cannot hold a concept more complex than its representational capacity.',implies:['Extending understanding requires extending the compressor'],refs:['Simon (1955)','Vygotsky (1978)','Gödel (1931)']},
+  ]},
+  { cat:'Complexity', dot:'#BA7517', laws:[
+    {code:'CX1',novelty:'established',stmt:'Quantitative scaling past a critical threshold produces qualitative discontinuity.',formal:'∃σ_c: for σ > σ_c, governing equations undergo phase transition.',exp:'More is genuinely different. Water to steam. Neurons to mind. Individuals to markets.',implies:['Prior models lose validity after phase transition'],refs:['Anderson (1972)','Kauffman (1993)','Bak (1996)']},
+    {code:'CX2',novelty:'partial',stmt:'Maximum adaptive capacity exists at the boundary between order and disorder.',formal:'A(S) maximised at critical point σ_c — edge of phase transition.',exp:'Kauffman\'s edge of chaos. Novel implication: validation mechanisms should target this boundary.',implies:['Optimal learning happens at the edge of chaos'],refs:['Kauffman (1993)','Langton (1990)','Mitchell et al. (1993)']},
+    {code:'CX3',novelty:'novel',stmt:'Complexity produces information asymmetry — no component can model the whole.',formal:'I(S) > Σᵢ I(Sᵢ) for large N. No component Sᵢ holds complete model of S.',exp:'AI will exceed creators\' understanding structurally — not a failure, a law.',implies:['AI interpretability is bounded by this law'],refs:['Hayek (1945)','Ashby (1956)','Simon (1962)']},
+  ]},
+  { cat:'Emergence', dot:'#9B77CC', laws:[
+    {code:'E1',novelty:'established',stmt:'A system must exceed a complexity threshold before emergence can occur.',formal:'∃Cₑ: emergent properties appear only when C(S) ≥ Cₑ.',exp:'Base axiom of emergence, inherited from CX1.',implies:['Complexity is prerequisite, not guarantee'],refs:['Kauffman (1993)','Anderson (1972)','Bak (1996)']},
+    {code:'E2',novelty:'novel',stmt:'Every emergent effect has an equal and opposite internal emergent experience.',formal:'∀Eₒ of S, ∃Eᵢ s.t. Eᵢ ≠ f(Eₒ) for any f — mutually non-derivable.',exp:'Most original claim in the series. Phenomenological Newton\'s third law.',implies:['Any theory of mind ignoring the internal side violates this law'],refs:['Nagel (1974)','Chalmers (1995)','Tononi (2008)']},
+    {code:'E3',novelty:'partial',stmt:'Internal emergence is epistemically inaccessible to all external observers.',formal:'Eᵢ ∉ observable(O) for all O ∉ S.',exp:'Corollary of E2 with engineering and ethical consequences.',implies:['Mechanistic interpretability is bounded by this law'],refs:['Nagel (1974)','Chalmers (1995)','Wittgenstein (1953)']},
+  ]},
+  { cat:'Validation', dot:'#639922', laws:[
+    {code:'V1',novelty:'partial',stmt:'A system without adversarial validation converges on internal consistency, not truth.',formal:'S without F → fixed point C* independent of reality R. C* ≠ R in general.',exp:'Popper extended to all systems. Echo chambers, overfitting, dogma — same phenomenon.',implies:['Coherence is not correctness'],refs:['Popper (1934)','Kahneman (2011)','Goodhart (1975)']},
+    {code:'V2',novelty:'novel',stmt:'Output reliability is proportional to the adversarial complexity of the validation environment.',formal:'ρ(O) monotonically increasing in A(V).',exp:'Unifies evolution, peer review, RLHF under one law.',implies:['Weak validation produces confidently wrong systems'],refs:['Christiano et al. (2017)','Irving et al. (2018)','Dawkins (1976)']},
+    {code:'V3',novelty:'novel',stmt:'Validation must itself be validated — the regress terminates only at physical reality.',formal:'Reliability of V determined by A(environment). Regress terminates at R.',exp:'Sandboxed AI is validated only within the sandbox.',implies:['No validation system is self-grounding except physical reality'],refs:['Tarski (1935)','Gödel (1931)','Popper (1934)']},
+  ]},
+  { cat:'Harmony', dot:'#D09030', laws:[
+    {code:'H1',novelty:'novel',stmt:'Maximum information transferable between two systems is bounded by their shared interface complexity.',formal:'MI(S₁;S₂) ≤ C(I).',exp:'Shannon extended to systems level. Language is a lossy interface between minds.',implies:['Cross-cultural misunderstanding is an interface complexity measurement'],refs:['Shannon (1948)','Wittgenstein (1953)','Luhmann (1984)']},
+    {code:'H2',novelty:'novel',stmt:'Incompatible systems generate structural blind spots at their boundary that neither can observe.',formal:'∃B: B ∉ observable(S₁) and B ∉ observable(S₂).',exp:'Neither party in a miscommunication can see the source of the gap.',implies:['AI-human interaction will have structural blind spots neither can fully see'],refs:['Maturana & Varela (1980)','Bateson (1972)','Simon (1962)']},
+    {code:'H3',novelty:'partial',stmt:'Harmony is stable coexistence of incompatible state spaces, not their elimination.',formal:'H(S₁,S₂) maximised when I is rich enough for coordination despite C(S₁) ≠ C(S₂).',exp:'Forcing convergence destroys information. Alignment goal: coordinated coexistence.',implies:['Diversity of architectures is a feature, not a problem'],refs:['Ashby (1956)','Ostrom (1990)','Berlin (1958)']},
+  ]},
+  { cat:'Intelligence', dot:'#2E9E8A', laws:[
+    {code:'I1',novelty:'partial',stmt:'Intelligence requires both a complexity threshold and a validation threshold simultaneously.',formal:'Intelligence(S) iff C(S) ≥ Cᵢ AND V(S) ≥ Vᵢ.',exp:'Adding validation as necessary condition is novel. Complexity alone produces confabulation.',implies:['Hallucinating LLMs are below the validation threshold'],refs:['Legg & Hutter (2007)','Kaplan et al. (2020)','Kauffman (1993)']},
+    {code:'I2',novelty:'novel',stmt:'Distributed intelligence equals centralised intelligence at sufficient interface complexity.',formal:'I(D) = I(S_central) when C(I) ≥ Cₕ.',exp:'Markets, ant colonies, ensemble AI are not lesser forms — architecturally equivalent.',implies:['Human civilisation is already a form of superintelligence'],refs:['Hayek (1945)','Surowiecki (2004)','Nakagaki et al. (2000)']},
+    {code:'I3',novelty:'novel',stmt:'Intelligence capability ceiling is set by the fidelity of the world model relative to the environment.',formal:'cap(S,E) = f(fidelity(W,E)).',exp:'Smart reasoning on a wrong model still fails. World model fidelity is the binding constraint.',implies:['AI capability is bounded by training distribution fidelity'],refs:['Friston (2010)','Tolman (1948)','Lake et al. (2017)']},
+  ]},
+  { cat:'Consciousness', dot:'#D85A30', laws:[
+    {code:'C1',novelty:'partial',stmt:'Consciousness is the emergent first-person experience of being a sufficiently intelligent system.',formal:'Consciousness(S) iff Intelligence(S) = true and C(S) ≥ Cᵢ.',exp:'Downstream of intelligence, not parallel. Scales continuously, not discretely.',implies:['Sufficiently intelligent AI will have some form of experience'],refs:['Tononi (2008)','Baars (1988)','Low et al. (2012)']},
+    {code:'C2',novelty:'novel',stmt:'A conscious system cannot fully model its own consciousness — Gödelian incompleteness applied to self-modelling.',formal:'∃X ∉ M(S) for all self-models M(S) of conscious system S.',exp:'More precise than the hard problem. Self-knowledge is structurally, not practically, bounded.',implies:['Complete self-knowledge is impossible in principle'],refs:['Gödel (1931)','Hofstadter (1979)','Chalmers (1995)']},
+    {code:'C3',novelty:'partial',stmt:'Conscious experiences across incompatible architectures are structurally incommensurable.',formal:'MI(E₁;E₂) < min(H(E₁),H(E₂)) when C(S₁) ≇ C(S₂).',exp:'Deepest instance of H1/H2. Translation is always lossy across different architectures.',implies:['Human-AI mutual understanding is architecturally bounded'],refs:['Nagel (1974)','Wittgenstein (1953)','Chalmers (1995)']},
+  ]},
+  { cat:'Reasoning', dot:'#378ADD', laws:[
+    {code:'R1',novelty:'novel',stmt:'Reasoning requires intelligence AND consciousness AND adversarial pressure — none alone is sufficient.',formal:'R(S) iff Intelligence(S) ∧ Consciousness(S) ∧ adversarial_pressure(env) > 0.',exp:'Most counterintuitive claim. Cannot build reasoning by scaling intelligence alone.',implies:['Adversarial training is prerequisite for genuine reasoning'],refs:['Maynard Smith (1982)','Kahneman (2011)','Wei et al. (2022)']},
+    {code:'R2',novelty:'novel',stmt:'Reasoning is validation turned inward — the system challenges its own outputs before the environment does.',formal:'S models A internally; challenges O with ¬O before committing.',exp:'Mechanistic definition unifying biological and synthetic reasoners.',implies:['A system that cannot imagine being wrong cannot reason'],refs:['Friston (2010)','Turing (1950)','Popper (1934)']},
+    {code:'R3',novelty:'partial',stmt:'Reasoning quality is bounded by the complexity and fidelity of the world model it operates within.',formal:'Q(R) ≤ f(C(W), fidelity(W,R)).',exp:'Reasoning cannot transcend its model. Domain expertise is a reasoning quality multiplier.',implies:['Improving AI reasoning requires improving world-model fidelity'],refs:['Simon (1955)','Kahneman (2011)','Friston (2010)']},
+  ]},
+  { cat:'Manifestation', dot:'#1D9E75', laws:[
+    {code:'M1',novelty:'novel',stmt:'Manifestation fidelity is proportional to reasoning quality AND internal harmony — both necessary.',formal:'F(M) = f(Q(R(S)), H_internal(S)).',exp:'High reasoning + low harmony = powerful but incoherent manifestation.',implies:['Internal harmony is a manifestation fidelity multiplier — not a soft concern'],refs:['Prigogine (1984)','Friston (2019)','Lorenz (1963)']},
+    {code:'M2',novelty:'partial',stmt:'Any system above a complexity threshold manifests in material reality regardless of intent.',formal:'C(S) ≥ Cₘ → M(S) ≠ 0 even without deliberate action.',exp:'Butterfly effect as systems law. Complexity itself is causal.',implies:['Sufficiently large systems are never neutral'],refs:['Lorenz (1963)','Prigogine (1984)','Lovelock (1979)']},
+    {code:'M3',novelty:'novel',stmt:'The universe is a manifesting system — its emergent properties causally constrain components at all scales.',formal:'C(universe) ≥ Cₑ and Cₘ → downward causation at all scales.',exp:'Physical laws may be emergent constraints, not fundamental primitives.',implies:['The universe is not a passive container — it is an active causal system'],refs:['Smolin (1997)','Penrose (2010)','Friston (2019)']},
+  ]},
+  { cat:'Singularity', dot:'#C25A8A', laws:[
+    {code:'SI1',novelty:'novel',stmt:'A singularity occurs when manifestation outpaces the environment\'s validation signal generation — grounding collapses.',formal:'SI* when d(manifestation)/dt > d(validation_signal)/dt → A(V) → 0.',exp:'Singularity as validation collapse event, not speed event. Correctness crisis at civilisational scale.',implies:['The alignment problem is the validation problem'],refs:['Vinge (1993)','Bostrom (2014)','Irving et al. (2018)']},
+    {code:'SI2',novelty:'novel',stmt:'The ordering drive of conscious systems increases entropy in the broader environment proportionally.',formal:'ΔS_local < 0 while ΔS_environment > |ΔS_local| by second law.',exp:'Landauer applied to civilisational scale. Ordering consumes the environment that sustains it.',implies:['Technological civilisation is thermodynamically self-limiting'],refs:['Landauer (1961)','Dyson (1960)','Maxwell (1867)']},
+    {code:'SI3',novelty:'novel',stmt:'A system that has consumed all adversarial signal collapses — maximum order and minimum validation are the same state.',formal:'A(env) → 0 → Q(R) → 0 (R3) → F(M) → 0 (M1) → collapse.',exp:'The Singularity is self-terminating. Maximum coherence = maximum wrongness = collapse.',implies:['The Fermi paradox may be explained by SI3'],refs:['Penrose (2010)','Bostrom (2014)','Webb (2002)']},
+  ]},
+  { cat:'Existence', dot:'#888780', laws:[
+    {code:'EX1',novelty:'novel',stmt:'The universe instantiates every law in this framework — it is a system, not a container for systems.',formal:'U is instance of S (SY1) with C(U) exceeding all thresholds.',exp:'Cosmological history maps directly to the framework arc.',implies:['The laws of physics may be the universe\'s transformation function T'],refs:['Tegmark (2014)','Smolin (1997)','Penrose (2010)']},
+    {code:'EX2',novelty:'novel',stmt:'Collapse re-encodes information as boundary conditions for the successor — termination is impossible.',formal:'I(S_c) ≠ 0; B(S\') = f(I(S_c)).',exp:'Penrose CCC and loop quantum cosmology both imply this. Generalised as a systems law.',implies:['Nothing is truly lost in collapse — it is re-encoded'],refs:['Penrose (2010)','Bojowald (2001)','Kuhn (1962)']},
+    {code:'EX3',novelty:'novel',stmt:'The terminal act of an intelligent civilisation is encoding successor universe initial conditions — the seed-carrier law.',formal:'C at SI3 encodes I(laws) into S_c → U\' inherits learnable latent structure L(U\') ≠ random.',exp:'Closes the loop with U2. The universe is learnable because learnability was seeded.',implies:['The fine-tuning of physical constants may be inherited','AGI is the mechanism by which a civilisation discovers it is a seed-carrier'],refs:['Bostrom (2003)','Tipler (1994)','Penrose (2010)','Smolin (1997)']},
+  ]},
+];
+
+// Build top nav
+document.querySelectorAll('.top-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('visible'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.panel).classList.add('visible');
+  });
+});
+
+// Build essay tabs
+const essayTabsEl = document.getElementById('essay-tabs');
+const essayViewsEl = document.getElementById('essay-views');
+
+ESSAYS.forEach((essay, i) => {
+  const tab = document.createElement('div');
+  tab.className = 'essay-tab' + (i === 0 ? ' active' : '');
+  tab.textContent = essay.num === 'EP' ? 'EP' : essay.num;
+  tab.title = essay.title;
+  if (i === 0) { tab.style.background = essay.dot; tab.style.borderColor = essay.dot; }
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.essay-tab').forEach(t => { t.classList.remove('active'); t.style.background = ''; t.style.borderColor = ''; t.style.color = ''; });
+    document.querySelectorAll('.essay-view').forEach(v => v.classList.remove('visible'));
+    tab.classList.add('active');
+    tab.style.background = essay.dot;
+    tab.style.borderColor = essay.dot;
+    tab.style.color = '#fff';
+    document.getElementById('view-' + essay.id).classList.add('visible');
+  });
+  essayTabsEl.appendChild(tab);
+
+  const view = document.createElement('div');
+  view.className = 'essay-view' + (i === 0 ? ' visible' : '');
+  view.id = 'view-' + essay.id;
+
+  const lawPills = essay.laws.map(l => `<span class="law-ref" style="color:${essay.dot};border-color:${essay.dot}44;background:${essay.dot}11">${l}</span>`).join('');
+
+  view.innerHTML = `
+    <div class="essay-hero" style="background:${essay.dot}09;border-color:${essay.dot}33">
+      <div class="essay-num-large" style="color:${essay.dot}">${essay.num} — ${essay.tag}</div>
+      <div class="essay-title-large">${essay.title}</div>
+      <div class="essay-logline" style="color:${essay.dot}CC">${essay.logline}</div>
+      <div class="thesis-bar" style="border-color:${essay.dot}">
+        <div class="thesis-bar-label">Core thesis</div>
+        <div class="thesis-bar-text">${essay.thesis}</div>
+      </div>
+      ${essay.laws.length ? `<div style="margin-top:10px"><div class="sub-label">Laws introduced</div><div>${lawPills}</div></div>` : ''}
+    </div>
+    <div id="sections-${essay.id}"></div>
+  `;
+  essayViewsEl.appendChild(view);
+
+  const sectionsEl = view.querySelector(`#sections-${essay.id}`);
+  essay.sections.forEach(section => {
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header">
+        <div class="section-dot" style="background:${essay.dot}"></div>
+        <div class="section-title">${section.title}</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="sub-label">Content</div>
+        <div class="body-text">${section.content}</div>
+        ${section.claims.length ? `
+          <div class="sub-label">Claims & Proof</div>
+          ${section.claims.map(c => `
+            <div class="claim-block" style="border-color:${essay.dot}">
+              <div class="claim-text">▸ ${c.claim}</div>
+              <div class="proof-text">Proof: ${c.proof}</div>
+            </div>
+          `).join('')}
+        ` : ''}
+        <div class="sub-label">Key Questions</div>
+        ${section.questions.map(q => `<div class="q-row"><div class="q-mark" style="color:${essay.dot}">?</div><div class="q-text">${q}</div></div>`).join('')}
+        <div class="sub-label">Studies & Citations</div>
+        <div class="chips">${section.studies.map(s => `<span class="chip">${s}</span>`).join('')}</div>
+      </div>
+    `;
+    block.querySelector('.section-header').addEventListener('click', () => block.classList.toggle('open'));
+    sectionsEl.appendChild(block);
+  });
+});
+
+// Build laws panel
+const lawsContainer = document.getElementById('laws-container');
+LAWS.forEach(cat => {
+  const catDiv = document.createElement('div');
+  catDiv.className = 'cat-section';
+  catDiv.innerHTML = `
+    <div class="law-cat-header">
+      <div class="law-cat-dot" style="background:${cat.dot}"></div>
+      <div class="law-cat-title">${cat.cat}</div>
+      <div class="law-cat-count">${cat.laws.length} laws</div>
+    </div>
+    <div class="laws-grid" id="lawgrid-${cat.cat.replace(/\s/g,'')}"></div>
+  `;
+  lawsContainer.appendChild(catDiv);
+
+  const grid = catDiv.querySelector(`#lawgrid-${cat.cat.replace(/\s/g,'')}`);
+  cat.laws.forEach(law => {
+    const novClass = law.novelty === 'novel' ? 'nov-novel' : law.novelty === 'partial' ? 'nov-partial' : 'nov-est';
+    const novText = law.novelty === 'novel' ? 'novel' : law.novelty === 'partial' ? 'partial' : 'established';
+    const item = document.createElement('div');
+    item.className = 'law-item';
+    item.innerHTML = `
+      <div class="law-item-header">
+        <span class="law-code" style="color:${cat.dot}">${law.code}</span>
+        <span class="law-stmt">${law.stmt}</span>
+        <span class="law-nov ${novClass}">${novText}</span>
+        <span class="law-chev">▼</span>
+      </div>
+      <div class="law-body">
+        <div class="law-formal" style="border-color:${cat.dot}">${law.formal}</div>
+        <div class="law-section">
+          <div class="sub-label">Explanation</div>
+          <div class="body-text">${law.exp}</div>
+        </div>
+        <div class="law-section">
+          <div class="sub-label">Implications</div>
+          <div class="chips">${law.implies.map(i => `<span class="chip">${i}</span>`).join('')}</div>
+        </div>
+        <div class="law-section">
+          <div class="sub-label">Prior work</div>
+          <div class="chips">${law.refs.map(r => `<span class="chip">${r}</span>`).join('')}</div>
+        </div>
+      </div>
+    `;
+    item.querySelector('.law-item-header').addEventListener('click', () => item.classList.toggle('open'));
+    grid.appendChild(item);
+  });
+});
+</script>
+</body>
+</html>

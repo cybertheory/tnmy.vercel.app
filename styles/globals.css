@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@100;200;300;500;600;700;800;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Epilogue", sans-serif;
+  }
+}
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body {
+  @apply text-neutral-100 bg-neutral-950;
+}
+
+body {
+  animation: onload 1.5s;
+  transition: 1s;
+}
+@keyframes onload {
+  0% {
+    opacity: 0;
+    margin-top: 2rem;
+  }
+  100% {
+    opacity: 1;
+    margin-top: 0;
+  }
+}
+
+.verticalNavActive span {
+  width: 100% !important;
+}
+
+.verticalNavLink span {
+  position: absolute;
+  transition: 0.2s;
+  width: 0%;
+  height: 0.125rem;
+  left: 0;
+  top: 100%;
+  background-color: #a3a3a3;
+}
+.essay-content h1 { @apply text-2xl sm:text-3xl font-semibold mb-4 mt-2 text-neutral-50; }
+.essay-content h2 { @apply text-lg sm:text-xl font-semibold mt-8 sm:mt-10 mb-3 text-neutral-200; }
+.essay-content h3 { @apply text-base sm:text-lg font-medium mt-6 sm:mt-8 mb-2 text-neutral-300; }
+.essay-content p { @apply text-neutral-300 leading-relaxed mb-4 text-sm sm:text-[15px]; }
+.essay-content blockquote { @apply border-l-2 border-neutral-600 pl-4 my-6 text-neutral-400 italic; }
+.essay-content em { @apply text-neutral-500 not-italic text-sm; }
+.essay-content strong { @apply text-neutral-100 font-semibold; }
+.essay-content hr { @apply my-10 border-neutral-800; }
+.essay-content ul { @apply list-disc pl-5 mb-4 space-y-1 text-neutral-300; }
+.essay-content li { @apply text-[15px] leading-relaxed; }
+.essay-content > p:first-of-type em { @apply text-neutral-500 text-sm tracking-wide block mb-6; }
+.verticalNavLink {
+  position: relative;
+}
